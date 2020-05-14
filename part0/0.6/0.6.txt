@@ -1,0 +1,16 @@
+note over browser:
+Sending the form creates a post request to new_note_spa endpoint.
+end note
+
+browser->server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+
+note over server:
+Server saves the new note and responds with 201 and a JSON message
+that implies that the note has been created.
+end note
+
+server-->browser: 201 Created, {"message":"note created"}
+
+note over browser:
+The JavaScript will now redraw the notes with the one inputted into the form.
+This is done without making any new network requests.
