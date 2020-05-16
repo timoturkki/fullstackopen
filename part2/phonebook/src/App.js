@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import AddPersonForm from "./components/AddPersonForm";
 import FilterNamesForm from "./components/FilterNamesForm";
 import PersonsList from "./components/PersonsList";
-import axios from "axios";
+import personsService from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -12,8 +12,8 @@ const App = () => {
   const [filterValue, setFilterValue] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then(({ data }) => {
-      setPersons(data);
+    personsService.getAll().then((persons) => {
+      setPersons(persons);
     });
   }, []);
 
@@ -25,19 +25,54 @@ const App = () => {
       )
     : persons;
 
+  const clearPersonInputs = () => {
+    setNewName("");
+    setNewNumber("");
+  };
+
   const addPerson = (e) => {
     e.preventDefault();
 
-    const nameExists = persons.some(
-      ({ name }) => name.toLowerCase() === newName.toLowerCase()
-    );
+    if (!newName) {
+      alert("please type in a name");
+      return;
+    }
+
+    const newPerson = { name: newName, number: newNumber };
+    const hasSameName = ({ name }) =>
+      name.toLowerCase() === newName.toLowerCase();
+    const nameExists = persons.some(hasSameName);
 
     if (nameExists) {
-      alert(`${newName} is already in the phonebook, please select another`);
+      if (window.confirm(`${newName} already exists, want to update number?`)) {
+        const { id } = persons.find(hasSameName);
+        console.log(id);
+
+        personsService.updatePerson(id, newPerson).then((returnedPerson) => {
+          console.log(returnedPerson);
+          setPersons(
+            persons.map((person) =>
+              person.id !== id ? person : returnedPerson
+            )
+          );
+          clearPersonInputs();
+        });
+      }
     } else {
-      setPersons(persons.concat({ name: newName, number: newNumber }));
-      setNewName("");
-      setNewNumber("");
+      personsService.createPerson(newPerson).then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
+      });
+      clearPersonInputs();
+    }
+  };
+
+  const deleteUser = (id, name) => {
+    if (
+      window.confirm(`Are you sure sure you want to delete ${name} (${id})`)
+    ) {
+      personsService.deletePerson(id).then(() => {
+        setPersons(persons.filter((person) => person.id !== id));
+      });
     }
   };
 
@@ -72,7 +107,7 @@ const App = () => {
         filterValue={filterValue}
       />
 
-      <PersonsList persons={personsToShow} />
+      <PersonsList persons={personsToShow} deleteHandler={deleteUser} />
     </div>
   );
 };
