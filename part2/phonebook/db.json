@@ -1,0 +1,24 @@
+{
+  "persons": [
+    {
+      "name": "Arto Hellas",
+      "number": "040040487",
+      "id": 1
+    },
+    {
+      "name": "Teppo Winnipeg",
+      "number": "040040480",
+      "id": 2
+    },
+    {
+      "name": "Uolevi Sinisilmä",
+      "number": "040666487",
+      "id": 3
+    },
+    {
+      "name": "Marjatta Sinisilmä",
+      "number": "040664487",
+      "id": 4
+    }
+  ]
+}

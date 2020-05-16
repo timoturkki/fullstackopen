@@ -9,7 +9,7 @@ const AddPersonForm = ({
 }) => (
   <form onSubmit={submitHandler}>
     <div>
-      <label for="fullName">Full name</label>
+      <label htmlFor="fullName">Full name</label>
       <br />
       <input
         type="text"
@@ -21,7 +21,7 @@ const AddPersonForm = ({
     </div>
 
     <div>
-      <label for="number">Phonenumber</label>
+      <label htmlFor="number">Phonenumber</label>
       <br />
       <input
         type="text"

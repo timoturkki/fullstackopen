@@ -1,19 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import AddPersonForm from "./components/AddPersonForm";
 import FilterNamesForm from "./components/FilterNamesForm";
 import PersonsList from "./components/PersonsList";
+import axios from "axios";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040040487" },
-    { name: "Teppo Winnipeg", number: "040040480" },
-    { name: "Uolevi Sinisilmä", number: "040666487" },
-    { name: "Marjatta Sinisilmä", number: "040664487" },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filterValue, setFilterValue] = useState("");
+
+  useEffect(() => {
+    axios.get("http://localhost:3001/persons").then(({ data }) => {
+      setPersons(data);
+    });
+  }, []);
 
   // if no value for filter field, show all persons
   // otherwise filter relevant names from persons list
