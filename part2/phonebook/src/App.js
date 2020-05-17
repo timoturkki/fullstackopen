@@ -3,13 +3,18 @@ import React, { useState, useEffect } from "react";
 import AddPersonForm from "./components/AddPersonForm";
 import FilterNamesForm from "./components/FilterNamesForm";
 import PersonsList from "./components/PersonsList";
+import Notification from "./components/Notification";
 import personsService from "./services/persons";
+
+const NOTIFICATION_DEFAULT_DURATION_MS = 5000;
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filterValue, setFilterValue] = useState("");
+  const [notification, setNotification] = useState();
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     personsService.getAll().then((persons) => {
@@ -30,11 +35,21 @@ const App = () => {
     setNewNumber("");
   };
 
+  const triggerNotification = (message, isErrorMsg = false) => {
+    setNotification(message);
+    setHasError(isErrorMsg);
+
+    setTimeout(() => {
+      setNotification("");
+      setHasError(false);
+    }, NOTIFICATION_DEFAULT_DURATION_MS);
+  };
+
   const addPerson = (e) => {
     e.preventDefault();
 
     if (!newName) {
-      alert("please type in a name");
+      triggerNotification("You have not entered a name");
       return;
     }
 
@@ -46,21 +61,31 @@ const App = () => {
     if (nameExists) {
       if (window.confirm(`${newName} already exists, want to update number?`)) {
         const { id } = persons.find(hasSameName);
-        console.log(id);
 
-        personsService.updatePerson(id, newPerson).then((returnedPerson) => {
-          console.log(returnedPerson);
-          setPersons(
-            persons.map((person) =>
-              person.id !== id ? person : returnedPerson
-            )
-          );
-          clearPersonInputs();
-        });
+        personsService
+          .updatePerson(id, newPerson)
+          .then((returnedPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.id !== id ? person : returnedPerson
+              )
+            );
+            clearPersonInputs();
+            triggerNotification(
+              `Person ${returnedPerson.name} updated with new number!`
+            );
+          })
+          .catch((e) => {
+            triggerNotification(
+              `Error, ${newName} has already been removed`,
+              true
+            );
+          });
       }
     } else {
       personsService.createPerson(newPerson).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
+        triggerNotification(`Person ${returnedPerson.name} added!`);
       });
       clearPersonInputs();
     }
@@ -72,6 +97,7 @@ const App = () => {
     ) {
       personsService.deletePerson(id).then(() => {
         setPersons(persons.filter((person) => person.id !== id));
+        triggerNotification(`Person ${name} deleted!`);
       });
     }
   };
@@ -91,6 +117,8 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+
+      <Notification message={notification} isError={hasError} />
 
       <h2>Add a new person</h2>
       <AddPersonForm
