@@ -1,3 +1,8 @@
+## Local development
+
+Backend is in repository: https://github.com/timoturkki/fullstackopen-backend
+To develope locally you must have the backend server running locally, or change proxy to: https://intense-journey-50443.herokuapp.com/
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
