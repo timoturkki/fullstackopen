@@ -118,7 +118,7 @@ describe('mostBlogs', () => {
 });
 
 describe('mostLikes', () => {
-  it('should return author with most blogs', () => {
+  it('should return author with most likes', () => {
     const result = listHelper.mostLikes(MOCK_BLOGS);
     const expected = {
       author: 'Edsger W. Dijkstra',
