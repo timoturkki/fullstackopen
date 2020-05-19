@@ -75,7 +75,7 @@ const App = () => {
               `Person ${returnedPerson.name} updated with new number!`
             );
           })
-          .catch((e) => {
+          .catch(() => {
             triggerNotification(
               `Error, ${newName} has already been removed`,
               true
@@ -83,10 +83,16 @@ const App = () => {
           });
       }
     } else {
-      personsService.createPerson(newPerson).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
-        triggerNotification(`Person ${returnedPerson.name} added!`);
-      });
+      personsService
+        .createPerson(newPerson)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson));
+          triggerNotification(`Person ${returnedPerson.name} added!`);
+        })
+        .catch((err) => {
+          const { error } = err.response.data;
+          triggerNotification(error, true);
+        });
       clearPersonInputs();
     }
   };
