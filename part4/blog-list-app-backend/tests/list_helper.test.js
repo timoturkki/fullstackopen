@@ -103,7 +103,7 @@ describe('mostBlogs', () => {
     const result = listHelper.mostBlogs(MOCK_BLOGS);
     const expected = {
       author: 'Robert C. Martin',
-      blogs: 3
+      blogAmount: 3
     };
 
     expect(result).toEqual(expected);
