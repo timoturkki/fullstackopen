@@ -248,11 +248,38 @@ describe('when blogs found from database', () => {
       await api
         .put(`/api/blogs/${blogToUpdate.id}`)
         .send({ title, author, url, likes })
+        .set('Authorization', authToken)
         .expect(200);
 
       const blogsAtEnd = await helper.blogsInDb();
 
       expect(blogsAtEnd[0].likes).toBe(likes);
+    });
+
+    it('should not allow updating blog by another user', async () => {
+      const newUser = await helper.addUserToDb('newuser', 'testing');
+      const authTokenForNewUser = await helper.getAuthToken(newUser);
+
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToUpdate = blogsAtStart[0];
+
+      const response = await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .set('Authorization', authTokenForNewUser)
+        .expect(401);
+
+      expect(response.body.error).toBe('not authorized to perform this operation');
+    });
+
+    it('should not allow updating blog when Authorization header missing', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToUpdate = blogsAtStart[0];
+
+      const response = await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .expect(401);
+
+      expect(response.body.error).toBe('invalid token');
     });
   });
 });

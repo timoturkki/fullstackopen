@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const Blog = require('../models/blog');
 const User = require('../models/user');
 
+const decodeToken = (token) => jwt.verify(token, process.env.SECRET);
 
 blogsRouter.get('/', async (_req, res) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
@@ -25,7 +26,7 @@ blogsRouter.get('/:id', async (req, res) => {
 blogsRouter.post('/', async (req, res) => {
   const { title, author, url, likes } = req.body;
 
-  const decodedToken = jwt.verify(req.token, process.env.SECRET);
+  const decodedToken = decodeToken(req.token);
 
   if (!req.token || !decodedToken.id) {
     return res.status(401).json({ error: 'token missing or invalid' });
@@ -45,7 +46,7 @@ blogsRouter.post('/', async (req, res) => {
 blogsRouter.delete('/:id', async (req, res) => {
   const id = req.params.id;
 
-  const decodedToken = jwt.verify(req.token, process.env.SECRET);
+  const decodedToken = decodeToken(req.token);
 
   if (!req.token || !decodedToken.id) {
     return res.status(401).json({ error: 'token missing or invalid' });
@@ -67,6 +68,20 @@ blogsRouter.put('/:id', async (req, res) => {
   const id = req.params.id;
   const { title, author, url, likes } = req.body;
   const blog = { title, author, url, likes };
+
+  const decodedToken = decodeToken(req.token);
+
+  if (!req.token || !decodedToken.id) {
+    return res.status(401).json({ error: 'token missing or invalid' });
+  }
+
+  const user = await User.findById(decodedToken.id);
+  const blogToUpdate = await Blog.findById(id);
+
+  if (blogToUpdate.user.toString() !== user._id.toString()) {
+    return res.status(401).json({ error: 'not authorized to perform this operation' });
+  }
+
   const updatedBlog = await Blog.findByIdAndUpdate(id, blog, { new: true });
 
   res.json(updatedBlog.toJSON());
