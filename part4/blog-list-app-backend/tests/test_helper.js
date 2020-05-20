@@ -66,9 +66,9 @@ const nonExistingId = async () => {
   return blog._id.toString();
 };
 
-const createUser = async () => {
-  const passwordHash = await bcrypt.hash('password123', 10);
-  const user = new User({ username: 'root', passwordHash });
+const createUser = async (username = 'root', password = 'password123') => {
+  const passwordHash = await bcrypt.hash(password, 10);
+  const user = new User({ username, passwordHash });
 
   return user;
 };
@@ -86,14 +86,25 @@ const initDbWithUser = async () => {
   return (await user.save()).toJSON();
 };
 
+const addUserToDb = async (username, password) => {
+  const user = await createUser(username, password);
+
+  return (await user.save()).toJSON();
+};
+
+
+const initDbWithBlogs = async (user) => {
+  await Blog.insertMany(initialBlogs.map(blog => ({ ...blog, user: user.id })));
+};
+
 const usersInDb = async () => {
   const users = await User.find({});
 
   return users.map(user => user.toJSON());
 };
 
-const getAuthToken = async () => {
-  const userToAuth = (await usersInDb())[0];
+const getAuthToken = async (user) => {
+  const userToAuth = user || (await usersInDb())[0];
   const { id, username } = userToAuth;
   const token = jwt.sign({ username, id }, process.env.SECRET);
 
@@ -107,5 +118,7 @@ module.exports = {
   nonExistingId,
   usersInDb,
   initDbWithUser,
+  initDbWithBlogs,
   getAuthToken,
+  addUserToDb
 };

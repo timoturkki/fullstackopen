@@ -12,8 +12,8 @@ describe('when blogs found from database', () => {
 
   beforeEach(async () => {
     await Blog.deleteMany({});
-    await Blog.insertMany(helper.initialBlogs);
-    await helper.initDbWithUser();
+    const user = await helper.initDbWithUser();
+    await helper.initDbWithBlogs(user);
 
     authToken = await helper.getAuthToken();
   });
@@ -53,12 +53,13 @@ describe('when blogs found from database', () => {
     it('should return single blog correctly', async () => {
       const blogToGet = (await helper.blogsInDb())[0];
 
+
       const response = await api
         .get(`/api/blogs/${blogToGet.id}`)
         .expect(200)
         .expect('Content-Type', /application\/json/);
 
-      expect(response.body).toEqual(blogToGet);
+      expect(JSON.stringify(response.body)).toEqual(JSON.stringify(blogToGet));
     });
 
     it('should 400 when faulty id', async () => {
@@ -189,12 +190,13 @@ describe('when blogs found from database', () => {
   });
 
   describe('Deleting blog', () => {
-    it('should return with status code 204 if id is valid', async () => {
+    it('should return with status code 204 and delete blog if id is valid', async () => {
       const blogsAtStart = await helper.blogsInDb();
       const blogToDelete = blogsAtStart[0];
 
       await api
         .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', authToken)
         .expect(204);
 
       const blogsAtEnd = await helper.blogsInDb();
@@ -204,6 +206,35 @@ describe('when blogs found from database', () => {
       const titles = blogsAtEnd.map(blog => blog.title);
 
       expect(titles).not.toContain(blogToDelete.title);
+    });
+
+    it('should not allow deleting blog by another user', async () => {
+      const newUser = await helper.addUserToDb('newuser', 'testing');
+      const authTokenForNewUser = await helper.getAuthToken(newUser);
+
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToDelete = blogsAtStart[0];
+
+      const response = await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', authTokenForNewUser)
+        .expect(401);
+
+      const blogsAtEnd = await helper.blogsInDb();
+
+      expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+      expect(response.body.error).toBe('not authorized to perform this operation');
+    });
+
+    it('should not allow deleting blog when Authorization header missing', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToDelete = blogsAtStart[0];
+
+      const response = await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(401);
+
+      expect(response.body.error).toBe('invalid token');
     });
   });
 
