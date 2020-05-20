@@ -285,8 +285,11 @@ describe('when blogs found from database', () => {
 });
 
 describe('when there is one user at db', () => {
+  let authToken;
   beforeEach(async () => {
     await helper.initDbWithUser();
+
+    authToken = await helper.getAuthToken();
   });
 
   describe('getting users', () => {
@@ -450,6 +453,7 @@ describe('when there is one user at db', () => {
 
       await api
         .delete(`/api/users/${userToDelete.id}`)
+        .set('Authorization', authToken)
         .expect(204);
 
       const usersAtEnd = await helper.usersInDb();
@@ -459,6 +463,38 @@ describe('when there is one user at db', () => {
       const usernames = usersAtEnd.map(user => user.username);
 
       expect(usernames).not.toContain(userToDelete.username);
+    });
+
+    it('should not allow deleting another user', async () => {
+      const newUser = await helper.addUserToDb('newuser', 'testing');
+      const authTokenForNewUser = await helper.getAuthToken(newUser);
+
+      const usersAtStart = await helper.usersInDb();
+      const userToDelete = usersAtStart[0];
+
+      const response = await api
+        .delete(`/api/users/${userToDelete.id}`)
+        .set('Authorization', authTokenForNewUser)
+        .expect(401);
+
+      const usersAtEnd = await helper.usersInDb();
+
+      expect(usersAtEnd).toHaveLength(2);
+      expect(response.body.error).toBe('not authorized to perform this operation');
+    });
+
+    it('should not be allowed without authentication', async () => {
+      const usersAtStart = await helper.usersInDb();
+      const userToDelete = usersAtStart[0];
+
+      const response = await api
+        .delete(`/api/users/${userToDelete.id}`)
+        .expect(401);
+
+      const usersAtEnd = await helper.usersInDb();
+
+      expect(usersAtEnd).toHaveLength(1);
+      expect(response.body.error).toBe('invalid token');
     });
   });
 });
