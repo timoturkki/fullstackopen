@@ -7,16 +7,10 @@ const helper = require('./test_helper');
 
 const api = supertest(app);
 
-describe('when blogs and one user found from database', () => {
-  let userId;
-
+describe('when blogs found from database', () => {
   beforeEach(async () => {
     await Blog.deleteMany({});
-
     await Blog.insertMany(helper.initialBlogs);
-
-    const savedUser = await helper.initDbWithUser();
-    userId = savedUser.id;
   });
 
 
@@ -82,7 +76,6 @@ describe('when blogs and one user found from database', () => {
         author: 'Âme solitaire',
         url: 'http://www.blog.com',
         likes: 6,
-        userId,
       };
 
       await api
@@ -105,7 +98,6 @@ describe('when blogs and one user found from database', () => {
         author: 'Âme solitaire',
         url: 'http://www.blog.com',
         likes: 4,
-        userId,
       };
 
       await api
@@ -123,7 +115,6 @@ describe('when blogs and one user found from database', () => {
         title: 'This is a great blog, trust me',
         author: 'Âme solitaire',
         likes: 4,
-        userId,
       };
 
       await api
@@ -141,7 +132,6 @@ describe('when blogs and one user found from database', () => {
         title: 'Default like should be 0!',
         author: 'Âme solitaire',
         url: 'http://www.blog.com',
-        userId,
       };
 
       await api
