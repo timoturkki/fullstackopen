@@ -11,11 +11,8 @@ const userSchema = mongoose.Schema({
     minlength: 3,
   },
   name: String,
-  passwordHash: {
-    type: String,
-    required: true,
-    minlength: 3,
-  },
+  // pw validation handled in controller
+  passwordHash: String,
   blogs: [
     {
       type: mongoose.Schema.Types.ObjectId,

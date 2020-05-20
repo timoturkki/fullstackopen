@@ -22,6 +22,18 @@ usersRouter.get('/:id', async (req, res) => {
 
 usersRouter.post('/', async (req, res) => {
   const { password, username, name } = req.body;
+  let error;
+
+  if (!password) {
+    error = 'password is required';
+  } else if (password.length < 3) {
+    error = 'password must be at lease 3 characters long';
+  }
+
+  if (error) {
+    return res.status(400).json({ error });
+  }
+
   const passwordHash = await bcrypt.hash(password, 10);
   const user = new User({ username, name, passwordHash });
   const savedUser = await user.save();
