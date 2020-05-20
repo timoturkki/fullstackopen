@@ -8,9 +8,14 @@ const helper = require('./test_helper');
 const api = supertest(app);
 
 describe('when blogs found from database', () => {
+  let authToken;
+
   beforeEach(async () => {
     await Blog.deleteMany({});
     await Blog.insertMany(helper.initialBlogs);
+    await helper.initDbWithUser();
+
+    authToken = await helper.getAuthToken();
   });
 
 
@@ -81,6 +86,7 @@ describe('when blogs found from database', () => {
       await api
         .post('/api/blogs')
         .send(blog)
+        .set('Authorization', authToken)
         .expect(201)
         .expect('Content-Type', /application\/json/);
 
@@ -103,6 +109,7 @@ describe('when blogs found from database', () => {
       await api
         .post('/api/blogs')
         .send(blogWithoutTitle)
+        .set('Authorization', authToken)
         .expect(400);
 
       const blogsAtEnd = await helper.blogsInDb();
@@ -120,6 +127,7 @@ describe('when blogs found from database', () => {
       await api
         .post('/api/blogs')
         .send(blogWithoutUrl)
+        .set('Authorization', authToken)
         .expect(400);
 
       const blogsAtEnd = await helper.blogsInDb();
@@ -137,6 +145,7 @@ describe('when blogs found from database', () => {
       await api
         .post('/api/blogs')
         .send(blogWithoutLikes)
+        .set('Authorization', authToken)
         .expect(201)
         .expect('Content-Type', /application\/json/);
 
