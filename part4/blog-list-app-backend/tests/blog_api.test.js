@@ -16,7 +16,7 @@ describe('when blogs and one user found from database', () => {
     await Blog.insertMany(helper.initialBlogs);
 
     const savedUser = await helper.initDbWithUser();
-    userId = savedUser._id;
+    userId = savedUser.id;
   });
 
 
@@ -37,7 +37,7 @@ describe('when blogs and one user found from database', () => {
     it('should return correct titles for blogs', async () => {
       const response = await api.get('/api/blogs');
 
-      const titles = response.body.map(r => r.title);
+      const titles = response.body.map(blog => blog.title);
 
       expect(titles).toEqual(helper.initialTitles);
     });
@@ -47,6 +47,31 @@ describe('when blogs and one user found from database', () => {
 
       expect(response.body[0].id).toBeDefined();
       expect(response.body[0]._id).not.toBeDefined();
+    });
+  });
+
+  describe('Getting single blog by id', () => {
+    it('should return single blog correctly', async () => {
+      const blogToGet = (await helper.blogsInDb())[0];
+
+      const response = await api
+        .get(`/api/blogs/${blogToGet.id}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+      expect(response.body).toEqual(blogToGet);
+    });
+
+    it('should 400 when faulty id', async () => {
+      const id = '1';
+
+      await api .get(`/api/blogs/${id}`).expect(400);
+    });
+
+    it('should 404 when id does not exist', async () => {
+      const id = await helper.nonExistingId();
+
+      await api .get(`/api/blogs/${id}`).expect(404);
     });
   });
 
@@ -68,7 +93,7 @@ describe('when blogs and one user found from database', () => {
 
       const blogsAtEnd = await helper.blogsInDb();
 
-      const titles = blogsAtEnd.map(r => r.title);
+      const titles = blogsAtEnd.map(blog => blog.title);
 
       expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
       expect(titles).toContain('This is a great blog, trust me');
@@ -125,7 +150,7 @@ describe('when blogs and one user found from database', () => {
         .expect(201)
         .expect('Content-Type', /application\/json/);
 
-      const savedBlog = (await helper.blogsInDb()).find(b => b.title === blogWithoutLikes.title);
+      const savedBlog = (await helper.blogsInDb()).find(blog => blog.title === blogWithoutLikes.title);
 
       expect(savedBlog.likes).toBe(0);
     });
@@ -144,7 +169,7 @@ describe('when blogs and one user found from database', () => {
 
       expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
 
-      const titles = blogsAtEnd.map(r => r.title);
+      const titles = blogsAtEnd.map(blog => blog.title);
 
       expect(titles).not.toContain(blogToDelete.title);
     });
@@ -171,7 +196,7 @@ describe('when blogs and one user found from database', () => {
 
 describe('when there is one user at db', () => {
   beforeEach(async () => {
-    await helper.initDbWithUser;
+    await helper.initDbWithUser();
   });
 
   describe('getting users', () => {
@@ -191,9 +216,34 @@ describe('when there is one user at db', () => {
     it('should return correct usernames', async () => {
       const response = await api.get('/api/users');
 
-      const usernames = response.body.map(r => r.username);
+      const usernames = response.body.map(user => user.username);
 
       expect(usernames).toEqual(['root']);
+    });
+  });
+
+  describe('Getting single user by id', () => {
+    it('should return single user correctly', async () => {
+      const userToGet = (await helper.usersInDb())[0];
+
+      const response = await api
+        .get(`/api/users/${userToGet.id}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+      expect(response.body).toEqual(userToGet);
+    });
+
+    it('should 400 when faulty id', async () => {
+      const id = '1';
+
+      await api .get(`/api/users/${id}`).expect(400);
+    });
+
+    it('should 404 when id does not exist', async () => {
+      const id = await helper.nonExistingId();
+
+      await api .get(`/api/users/${id}`).expect(404);
     });
   });
 
@@ -216,7 +266,7 @@ describe('when there is one user at db', () => {
       const usersAtEnd = await helper.usersInDb();
       expect(usersAtEnd).toHaveLength(usersAtStart.length + 1);
 
-      const usernames = usersAtEnd.map(u => u.username);
+      const usernames = usersAtEnd.map(user => user.username);
       expect(usernames).toContain(newUser.username);
     });
 
@@ -239,6 +289,25 @@ describe('when there is one user at db', () => {
 
       const usersAtEnd = await helper.usersInDb();
       expect(usersAtEnd).toHaveLength(usersAtStart.length);
+    });
+  });
+
+  describe('Deleting user', () => {
+    it('should return with status code 204 if id is valid and remove the only user', async () => {
+      const usersAtStart = await helper.usersInDb();
+      const userToDelete = usersAtStart[0];
+
+      await api
+        .delete(`/api/users/${userToDelete.id}`)
+        .expect(204);
+
+      const usersAtEnd = await helper.usersInDb();
+
+      expect(usersAtEnd).toHaveLength(0);
+
+      const usernames = usersAtEnd.map(user => user.username);
+
+      expect(usernames).not.toContain(userToDelete.username);
     });
   });
 });
