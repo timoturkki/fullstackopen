@@ -7,11 +7,16 @@ const helper = require('./test_helper');
 
 const api = supertest(app);
 
-describe('when blogs found from database', () => {
+describe('when blogs and one user found from database', () => {
+  let userId;
+
   beforeEach(async () => {
     await Blog.deleteMany({});
 
     await Blog.insertMany(helper.initialBlogs);
+
+    const savedUser = await helper.initDbWithUser();
+    userId = savedUser._id;
   });
 
 
@@ -23,7 +28,7 @@ describe('when blogs found from database', () => {
         .expect('Content-Type', /application\/json/);
     });
 
-    it('should return correct amount of blogs blogs', async () => {
+    it('should return correct amount of blogs', async () => {
       const response = await api.get('/api/blogs');
 
       expect(response.body).toHaveLength(helper.initialBlogs.length);
@@ -52,6 +57,7 @@ describe('when blogs found from database', () => {
         author: 'Âme solitaire',
         url: 'http://www.blog.com',
         likes: 6,
+        userId,
       };
 
       await api
@@ -74,6 +80,7 @@ describe('when blogs found from database', () => {
         author: 'Âme solitaire',
         url: 'http://www.blog.com',
         likes: 4,
+        userId,
       };
 
       await api
@@ -91,6 +98,7 @@ describe('when blogs found from database', () => {
         title: 'This is a great blog, trust me',
         author: 'Âme solitaire',
         likes: 4,
+        userId,
       };
 
       await api
@@ -108,6 +116,7 @@ describe('when blogs found from database', () => {
         title: 'Default like should be 0!',
         author: 'Âme solitaire',
         url: 'http://www.blog.com',
+        userId,
       };
 
       await api
@@ -156,6 +165,80 @@ describe('when blogs found from database', () => {
       const blogsAtEnd = await helper.blogsInDb();
 
       expect(blogsAtEnd[0].likes).toBe(likes);
+    });
+  });
+});
+
+describe('when there is one user at db', () => {
+  beforeEach(async () => {
+    await helper.initDbWithUser;
+  });
+
+  describe('getting users', () => {
+    it('should return users as json', async () => {
+      await api
+        .get('/api/users')
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+    });
+
+    it('should return return 1 user', async () => {
+      const response = await api.get('/api/users');
+
+      expect(response.body).toHaveLength(1);
+    });
+
+    it('should return correct usernames', async () => {
+      const response = await api.get('/api/users');
+
+      const usernames = response.body.map(r => r.username);
+
+      expect(usernames).toEqual(['root']);
+    });
+  });
+
+  describe('creating user', () => {
+    it('should succesfully create user with unique username', async () => {
+      const usersAtStart = await helper.usersInDb();
+
+      const newUser = {
+        username: 'timoturkki',
+        name: 'Timo Turkki',
+        password: 'mystery',
+      };
+
+      await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+      const usersAtEnd = await helper.usersInDb();
+      expect(usersAtEnd).toHaveLength(usersAtStart.length + 1);
+
+      const usernames = usersAtEnd.map(u => u.username);
+      expect(usernames).toContain(newUser.username);
+    });
+
+    it('should fail with proper statuscode and message if username already exists', async () => {
+      const usersAtStart = await helper.usersInDb();
+
+      const newUser = {
+        username: 'root',
+        name: 'Root Vegetable',
+        password: 'mystery',
+      };
+
+      const result = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/);
+
+      expect(result.body.error).toContain('`username` to be unique');
+
+      const usersAtEnd = await helper.usersInDb();
+      expect(usersAtEnd).toHaveLength(usersAtStart.length);
     });
   });
 });

@@ -4,5 +4,6 @@ Content-Type: application/json
 {
     "author": "Teppo Winnipeg",
     "title": "Test title",
-    "url": "http://google.com/"
+    "url": "http://google.com/",
+    "userId": "5ec52b709d1d9390d859daa7"
 }
