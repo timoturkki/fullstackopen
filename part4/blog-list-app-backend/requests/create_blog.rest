@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs HTTP/1.1
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRlcGkiLCJpZCI6IjVlYzUyYjcwOWQxZDkzOTBkODU5ZGFhNyIsImlhdCI6MTU4OTk4NDY4M30.Y1IMPRwGluraMtQBh2qnenENTRj1KYI380VKHIcFslg
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRlcGkiLCJpZCI6IjVlYzUyYjcwOWQxZDkzOTBkODU5ZGFhNyIsImlhdCI6MTU4OTk4NzgyMH0.TdpHunAzDriou_5zRoiAoh4MkWvKpPuzduzidxSGcCg
 
 {
     "author": "Teppo Winnipeg",

@@ -117,6 +117,39 @@ describe('when blogs found from database', () => {
       expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
     });
 
+    it('should not allow adding blog with bearer token not correct', async () => {
+      const blog = {
+        title: 'This is a great blog, trust me',
+        author: 'Âme solitaire',
+        url: 'http://www.blog.com',
+        likes: 6,
+      };
+
+      const response = await api
+        .post('/api/blogs')
+        .send(blog)
+        .set('Authorization', 'bearer hehe')
+        .expect(401);
+
+      expect(response.body.error).toBe('invalid token');
+    });
+
+    it('should not allow adding blog when Authorization header missing', async () => {
+      const blog = {
+        title: 'This is a great blog, trust me',
+        author: 'Âme solitaire',
+        url: 'http://www.blog.com',
+        likes: 6,
+      };
+
+      const response = await api
+        .post('/api/blogs')
+        .send(blog)
+        .expect(401);
+
+      expect(response.body.error).toBe('invalid token');
+    });
+
     it('should not allow adding blog without url', async () => {
       const blogWithoutUrl = {
         title: 'This is a great blog, trust me',
