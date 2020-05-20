@@ -118,7 +118,7 @@ describe('when blogs found from database', () => {
       expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
     });
 
-    it('should not allow adding blog with bearer token not correct', async () => {
+    it('should not allow adding blog when bearer token is not correct', async () => {
       const blog = {
         title: 'This is a great blog, trust me',
         author: 'Âme solitaire',
@@ -465,7 +465,7 @@ describe('when there is one user at db', () => {
       expect(usernames).not.toContain(userToDelete.username);
     });
 
-    it('should not allow deleting another user', async () => {
+    it('should not allow deleting another users account', async () => {
       const newUser = await helper.addUserToDb('newuser', 'testing');
       const authTokenForNewUser = await helper.getAuthToken(newUser);
 
@@ -483,7 +483,7 @@ describe('when there is one user at db', () => {
       expect(response.body.error).toBe('not authorized to perform this operation');
     });
 
-    it('should not be allowed without authentication', async () => {
+    it('should not allow deleting user without authentication', async () => {
       const usersAtStart = await helper.usersInDb();
       const userToDelete = usersAtStart[0];
 
