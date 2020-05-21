@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { generate as generateId } from 'shortid';
 
 import Blogs from './components/Blogs';
@@ -22,6 +22,8 @@ const App = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
+  const notificationsRef = useRef(notifications);
+  notificationsRef.current = notifications;
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -101,7 +103,7 @@ const App = () => {
     }
   };
 
-  const deleteAlertHandler = (id) => setNotifications(notifications.filter(n => n.id !== id));
+  const deleteAlertHandler = (id) => setNotifications(notificationsRef.current.filter(n => n.id !== id));
 
   return (
     <>

@@ -4,11 +4,11 @@ const Notification = ({ notification, deleteHandler }) => {
   const { msg, isAlert } = notification;
 
   useEffect(() => {
-    const timer = setTimeout(() => deleteHandler(), 5000);
+    const timer = setTimeout(() => deleteHandler(), 6000);
     return () => clearTimeout(timer);
-  }, [deleteHandler]);
+  }, []);
 
   return <p className={`notification${isAlert ? ' error' : ''}`}>{msg}</p>;
 };
 
-export default React.memo(Notification);
+export default Notification;
