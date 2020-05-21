@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-const Notification = ({ message, isError }) => {
-  if (!message) {
-    return null;
-  }
+const Notification = ({ notification, deleteHandler }) => {
+  const { msg, isAlert, id } = notification;
 
-  return <p className={`notification${isError ? ' error' : ''}`}>{message}</p>;
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      console.log(`${msg} deleted`);
+      deleteHandler(id);
+    }, 5000);
+    return () => clearTimeout(timer);
+  });
+
+  return <p className={`notification${isAlert ? ' error' : ''}`}>{msg}</p>;
 };
 
-export default Notification;
+export default React.memo(Notification);

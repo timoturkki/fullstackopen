@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { generate as generateId } from 'shortid';
 
 import Blogs from './components/Blogs';
 import LoginForm from './components/LoginForm';
@@ -14,15 +15,13 @@ import { getLoggedInUser, setLoggedInUser, removeLoggedInUser } from './utils/us
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [notification, setNotification] = useState('');
-  const [hasError, setHasError] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
-  const [timer, setTimer] = useState(null);
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -43,7 +42,6 @@ const App = () => {
   const loginHandler = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setNotification('');
 
     try {
       const user = await loginService.login({ username, password });
@@ -57,7 +55,7 @@ const App = () => {
       setLoading(false);
     } catch (e) {
       setLoading(false);
-      triggerNotification('Wrong credentials, please try again', true);
+      triggerNotification({ msg: 'Wrong credentials, please try again', isAlert: true });
     }
   };
 
@@ -65,20 +63,20 @@ const App = () => {
     e.preventDefault();
 
     setLoading(true);
-    setNotification('');
+    setNotifications('');
 
     try {
       const newBlog = await blogService.createBlog({ title, author, url });
       setBlogs(blogs.concat(newBlog));
 
-      triggerNotification(`a new blog "${title}" by ${author} added`);
+      triggerNotification({ msg: `a new blog "${title}" by ${author} added`, isAlert: false });
       setTitle('');
       setAuthor('');
       setUrl('');
       setLoading(false);
     } catch (e) {
       setLoading(false);
-      triggerNotification('Adding new blog failed, please check your blog information', true);
+      triggerNotification({ msg: 'Adding new blog failed, please check your blog information', isAlert: true });
     }
   };
 
@@ -87,25 +85,36 @@ const App = () => {
     setUser(null);
   };
 
-  const triggerNotification = (message, isErrorMsg = false) => {
-    setNotification(message);
-    setHasError(isErrorMsg);
+  const triggerNotification = (newNotification) => {
+    const matchingIndex = notifications.findIndex(n => n.msg === newNotification.msg);
+    const notificationWithId = { ...newNotification, id: generateId() };
 
-    if (timer) {
-      window.clearTimeout(timer);
+    // if notification with same message exists already
+    // then replace it so the timer starts again
+    if (matchingIndex > -1) {
+      const notificationsCopy = [...notifications];
+      notificationsCopy[matchingIndex] = notificationWithId;
+      setNotifications(notificationsCopy);
+    } else {
+      // otherwise add the new notification to the list
+      // so multiple different can be shown at the same time
+      setNotifications(notifications.concat(notificationWithId));
     }
-
-    setTimer(setTimeout(() => {
-      setNotification('');
-      setHasError(false);
-    }, 5000));
   };
+
+  const deleteAlertHandler = (id) => setNotifications(notifications.filter(n => n.id !== id));
 
   return (
     <>
       <h1>Welcome to browse some blogs!</h1>
 
-      <Notification message={notification} isError={hasError} />
+      {(notifications || []).map((notification) =>
+        <Notification
+          key={`notification-${notification.id}`}
+          notification={notification}
+          deleteHandler={deleteAlertHandler}
+        />
+      )}
 
       {loading ?
         <Loading /> :
