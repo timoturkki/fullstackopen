@@ -63,7 +63,6 @@ const App = () => {
     e.preventDefault();
 
     setLoading(true);
-    setNotifications('');
 
     try {
       const newBlog = await blogService.createBlog({ title, author, url });
@@ -108,7 +107,7 @@ const App = () => {
     <>
       <h1>Welcome to browse some blogs!</h1>
 
-      {(notifications || []).map((notification) =>
+      {notifications.map((notification) =>
         <Notification
           key={`notification-${notification.id}`}
           notification={notification}
