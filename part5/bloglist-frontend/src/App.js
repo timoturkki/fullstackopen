@@ -70,7 +70,7 @@ const App = () => {
       const newBlog = await blogService.createBlog({ title, author, url });
       setBlogs(blogs.concat(newBlog));
 
-      triggerNotification({ msg: `a new blog "${title}" by ${author} added`, isAlert: false });
+      triggerNotification({ msg: `A new blog "${title}" by ${author} added`, isAlert: false });
       setTitle('');
       setAuthor('');
       setUrl('');
