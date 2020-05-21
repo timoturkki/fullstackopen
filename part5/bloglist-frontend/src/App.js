@@ -6,6 +6,7 @@ import LoginForm from './components/LoginForm';
 import Loading from './components/Loading';
 import CreateBlogForm from './components/CreateBlogForm';
 import Notification from './components/Notification';
+import Togglable from './components/Togglable';
 
 import blogService from './services/blogs';
 import loginService from './services/login';
@@ -22,9 +23,7 @@ const App = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
-  // we are deleting notifications inside setTimeout callback
-  // it needs a reference to the current notifications value, otherwise
-  // it will use the value notifications had when the timeout started
+  const blogFormRef = React.createRef();
   const notificationsRef = useRef(notifications);
   notificationsRef.current = notifications;
 
@@ -68,6 +67,7 @@ const App = () => {
     e.preventDefault();
 
     setLoading(true);
+    blogFormRef.current.toggleVisibility();
 
     try {
       const newBlog = await blogService.createBlog({ title, author, url });
@@ -126,30 +126,28 @@ const App = () => {
           {user ?
             <>
               <h2>Blogs!</h2>
-              <p>You are logged in as {user.name}</p>
-              <button type="button" onClick={logutHandler}>logout</button>
-              <CreateBlogForm
-                createBlogHandler={createBlogHandler}
-                username={username}
-                title={title}
-                author={author}
-                url={url}
-                titleHandler={(e) => (setTitle(e.target.value))}
-                authorHandler={(e) => (setAuthor(e.target.value))}
-                urlHandler={(e) => (setUrl(e.target.value))}
-              />
+              <p>You are logged in as {user.name} <button type="button" onClick={logutHandler}>logout</button></p>
+              <Togglable showButtonLabel='Create blog' hideButtonLabel='Hide form' ref={blogFormRef}>
+                <CreateBlogForm
+                  createBlogHandler={createBlogHandler}
+                  username={username}
+                  title={title}
+                  author={author}
+                  url={url}
+                  titleHandler={(e) => (setTitle(e.target.value))}
+                  authorHandler={(e) => (setAuthor(e.target.value))}
+                  urlHandler={(e) => (setUrl(e.target.value))}
+                />
+              </Togglable>
               <Blogs blogs={blogs} />
             </> :
-            <>
-              <h2>Log in please</h2>
-              <LoginForm
-                username={username}
-                password={password}
-                usernameHandler={(e) => setUsername(e.target.value)}
-                passwordHandler={(e) => (setPassword(e.target.value))}
-                loginHandler={loginHandler}
-              />
-            </>
+            <LoginForm
+              username={username}
+              password={password}
+              usernameHandler={(e) => setUsername(e.target.value)}
+              passwordHandler={(e) => (setPassword(e.target.value))}
+              loginHandler={loginHandler}
+            />
           }
         </>
       }
