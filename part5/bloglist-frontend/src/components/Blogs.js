@@ -3,7 +3,7 @@ import React from 'react';
 import Loading from './Loading';
 import Blog from './Blog';
 
-const Blogs = ({ blogs, removeBlogHandler }) => {
+const Blogs = ({ blogs, removeBlogHandler, updateBlogHandler }) => {
   const sortedByLikes = blogs.sort((a, b) => b.likes - a.likes);
 
   const blogsStyles = {
@@ -20,7 +20,12 @@ const Blogs = ({ blogs, removeBlogHandler }) => {
         <Loading /> :
         <ul className="unstyled-list" style={blogsStyles}>
           {sortedByLikes.map((blog) =>
-            <Blog key={`blog-${blog.id}`} blog={blog} removeBlogHandler={removeBlogHandler} />
+            <Blog
+              key={`blog-${blog.id}`}
+              blog={blog}
+              removeBlogHandler={removeBlogHandler}
+              updateBlogHandler={updateBlogHandler}
+            />
           )}
         </ul>
       }

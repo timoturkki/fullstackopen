@@ -91,6 +91,22 @@ const App = () => {
     }
   };
 
+  const updateBlogHandler = async (id, blog) => {
+    const { title } = blog;
+
+    try {
+      const savedBlog = await blogService.updateBlog(id, blog);
+      const oldindex = blogs.findIndex(blog => blog.id === id);
+      const blogsCopy = [...blogs];
+      blogsCopy[oldindex] = savedBlog;
+      setBlogs(blogsCopy);
+
+      triggerNotification({ msg: `Succesfully updated blog: ${title}`, isAlert: false });
+    } catch (e) {
+      triggerNotification({ msg: 'Updating blog failed, please try again', isAlert: true });
+    }
+  };
+
   const logutHandler = () => {
     removeLoggedInUser();
     setUser(null);
@@ -137,7 +153,11 @@ const App = () => {
               <Togglable showButtonLabel='Create blog' hideButtonLabel='Hide form' ref={blogFormRef}>
                 <CreateBlogForm createBlogHandler={createBlogHandler} />
               </Togglable>
-              <Blogs blogs={blogs} removeBlogHandler={removeBlogHandler} />
+              <Blogs
+                blogs={blogs}
+                removeBlogHandler={removeBlogHandler}
+                updateBlogHandler={updateBlogHandler}
+              />
             </> :
             <LoginForm
               username={username}

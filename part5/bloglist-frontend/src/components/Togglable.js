@@ -6,7 +6,7 @@ const Togglable = ({ showButtonLabel, hideButtonLabel, children }, ref) => {
 
   const hideWhenVisible = { display: isVisible ? 'none' : '' };
   const showWhenVisible = { display: isVisible ? '' : 'none' };
-  console.log(isVisible);
+
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
   };

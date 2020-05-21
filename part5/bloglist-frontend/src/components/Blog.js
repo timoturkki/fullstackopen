@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Blog = ({ blog, removeBlogHandler }) => {
+const Blog = ({ blog, removeBlogHandler, updateBlogHandler }) => {
   const [detailsIsVisible, setDetailsIsVisible] = useState(false);
   const { title, author, id, url, user, likes } = blog;
 
@@ -10,8 +10,9 @@ const Blog = ({ blog, removeBlogHandler }) => {
     }
   };
 
-  const addLike = () => {
-    console.log('liked!');
+  const addLike = (e) => {
+    e.stopPropagation();
+    updateBlogHandler(id, { author, title, url, user: user.id, likes: likes + 1 });
   };
 
   const toggleDetailsVisibility = () => setDetailsIsVisible(!detailsIsVisible);
