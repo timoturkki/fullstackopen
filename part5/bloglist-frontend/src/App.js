@@ -22,6 +22,9 @@ const App = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
+  // we are deleting notifications inside setTimeout callback
+  // it needs a reference to the current notifications value, otherwise
+  // it will use the value notifications had when the timeout started
   const notificationsRef = useRef(notifications);
   notificationsRef.current = notifications;
 
