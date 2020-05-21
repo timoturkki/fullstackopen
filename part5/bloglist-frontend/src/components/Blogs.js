@@ -4,6 +4,10 @@ import Loading from './Loading';
 import Blog from './Blog';
 
 const Blogs = ({ blogs, removeBlogHandler, updateBlogHandler }) => {
+  if (!blogs) {
+    return (<p>No blogs added!</p>);
+  }
+
   const sortedByLikes = blogs.sort((a, b) => b.likes - a.likes);
 
   const blogsStyles = {

@@ -25,9 +25,21 @@ const App = () => {
   notificationsRef.current = notifications;
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    );
+    const fetchBlogs = async () => {
+      try {
+        const blogs = await blogService.getAll();
+
+        if (blogs && blogs.length) {
+          setBlogs(blogs);
+        } else {
+          setBlogs(null);
+        }
+      } catch(_e) {
+        setBlogs(null);
+      }
+    };
+
+    fetchBlogs();
   }, []);
 
   useEffect(() => {
@@ -139,7 +151,7 @@ const App = () => {
         <Notification
           key={`notification-${notification.id}`}
           notification={notification}
-          deleteHandler={deleteAlertHandler}
+          deleteHandler={() => deleteAlertHandler(notification.id)}
         />
       )}
 
