@@ -20,9 +20,6 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
   const blogFormRef = React.createRef();
   const notificationsRef = useRef(notifications);
   notificationsRef.current = notifications;
@@ -63,20 +60,16 @@ const App = () => {
     }
   };
 
-  const createBlogHandler = async (e) => {
-    e.preventDefault();
-
+  const createBlogHandler = async (newBlog) => {
     setLoading(true);
     blogFormRef.current.toggleVisibility();
 
     try {
-      const newBlog = await blogService.createBlog({ title, author, url });
-      setBlogs(blogs.concat(newBlog));
+      const createdBlog = await blogService.createBlog(newBlog);
+      const { title, author } = createdBlog;
+      setBlogs(blogs.concat(createdBlog));
 
       triggerNotification({ msg: `A new blog "${title}" by ${author} added`, isAlert: false });
-      setTitle('');
-      setAuthor('');
-      setUrl('');
       setLoading(false);
     } catch (e) {
       setLoading(false);
@@ -128,16 +121,7 @@ const App = () => {
               <h2>Blogs!</h2>
               <p>You are logged in as {user.name} <button type="button" onClick={logutHandler}>logout</button></p>
               <Togglable showButtonLabel='Create blog' hideButtonLabel='Hide form' ref={blogFormRef}>
-                <CreateBlogForm
-                  createBlogHandler={createBlogHandler}
-                  username={username}
-                  title={title}
-                  author={author}
-                  url={url}
-                  titleHandler={(e) => (setTitle(e.target.value))}
-                  authorHandler={(e) => (setAuthor(e.target.value))}
-                  urlHandler={(e) => (setUrl(e.target.value))}
-                />
+                <CreateBlogForm createBlogHandler={createBlogHandler} />
               </Togglable>
               <Blogs blogs={blogs} />
             </> :
