@@ -12,3 +12,8 @@
     background-color: #f7e7e7;
   }
   
+  .unstyled-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
