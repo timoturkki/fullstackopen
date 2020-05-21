@@ -22,6 +22,7 @@ const App = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
+  const [timer, setTimer] = useState(null);
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -90,10 +91,14 @@ const App = () => {
     setNotification(message);
     setHasError(isErrorMsg);
 
-    setTimeout(() => {
+    if (timer) {
+      window.clearTimeout(timer);
+    }
+
+    setTimer(setTimeout(() => {
       setNotification('');
       setHasError(false);
-    }, 5000);
+    }, 5000));
   };
 
   return (
