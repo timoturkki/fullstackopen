@@ -111,7 +111,7 @@ const App = () => {
         <Notification
           key={`notification-${notification.id}`}
           notification={notification}
-          deleteHandler={deleteAlertHandler}
+          deleteHandler={() => deleteAlertHandler(notification.id)}
         />
       )}
 
