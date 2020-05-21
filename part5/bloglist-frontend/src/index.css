@@ -17,3 +17,14 @@
     margin: 0;
     padding: 0;
   }
+
+  button {
+    background-color: rgb(228, 104, 93);
+    border-radius: 4px;
+    display: inline-block;
+    cursor: pointer;
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    padding: 5px 12px;
+    box-shadow: 0 2px 4px rgba(30, 30, 30, 0.3);
+  }

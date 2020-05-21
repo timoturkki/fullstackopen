@@ -25,7 +25,7 @@ const Blog = ({ blog, removeBlogHandler }) => {
     cursor: 'pointer',
   };
 
-  const viewDetailsStyles = {
+  const buttonStyles = {
     marginLeft: 12,
   };
 
@@ -37,6 +37,8 @@ const Blog = ({ blog, removeBlogHandler }) => {
     borderBottom: '1px solid rgb(220, 216, 216)',
     margin: '6px 0',
     padding: '6px 0',
+    display: 'flex',
+    alignItems: 'center',
   };
 
   const blogInfoFirstStyles = {
@@ -48,12 +50,12 @@ const Blog = ({ blog, removeBlogHandler }) => {
     <>
       <li style={blogStyles} onClick={toggleDetailsVisibility}>
         {title}, written by: {author}
-        <button style={viewDetailsStyles} type="button" onClick={toggleDetailsVisibility}>{ detailsIsVisible ? 'Hide details' : 'View details'}</button>
+        <button style={buttonStyles} type="button" onClick={toggleDetailsVisibility}>{ detailsIsVisible ? 'Hide details' : 'View details'}</button>
 
         {detailsIsVisible && <>
           <div style={blogInfoBoxStyles}>
             <p style={blogInfoFirstStyles}>url: {url}</p>
-            <p style={blogInfoStyles}>likes: {likes} <button type="button" onClick={addLike}>Like</button></p>
+            <p style={blogInfoStyles}>likes: {likes} <button style={buttonStyles} type="button" onClick={addLike}>Like</button></p>
             <p style={blogInfoStyles}>added by: {user.name}</p>
           </div>
 

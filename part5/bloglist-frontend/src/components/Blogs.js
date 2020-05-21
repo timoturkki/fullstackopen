@@ -8,7 +8,7 @@ const Blogs = ({ blogs, removeBlogHandler }) => {
 
   const blogsStyles = {
     margin: '12px 0',
-    padding: '12px 6px',
+    padding: '0 8px',
     border: '1px solid #2b4832',
     borderWidth: 1,
     backgroundColor: '#e7f7f5',
