@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 
 const Notification = ({ notification, deleteHandler }) => {
-  const { msg, isAlert } = notification;
+  const { id, msg, isAlert } = notification;
 
   useEffect(() => {
-    const timer = setTimeout(() => deleteHandler(), 6000);
+    const timer = setTimeout(() => deleteHandler(id), 6000);
     return () => clearTimeout(timer);
   }, []);
 
