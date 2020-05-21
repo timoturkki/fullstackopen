@@ -77,6 +77,20 @@ const App = () => {
     }
   };
 
+  const removeBlogHandler = async (id, title) => {
+    setLoading(true);
+
+    try {
+      await blogService.deleteBlog(id);
+      setBlogs(blogs.filter(b => b.id !== id));
+      triggerNotification({ msg: `Succesfully removed blog: ${title}`, isAlert: false });
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      triggerNotification({ msg: 'Removing blog failed, please try again', isAlert: true });
+    }
+  };
+
   const logutHandler = () => {
     removeLoggedInUser();
     setUser(null);
@@ -123,7 +137,7 @@ const App = () => {
               <Togglable showButtonLabel='Create blog' hideButtonLabel='Hide form' ref={blogFormRef}>
                 <CreateBlogForm createBlogHandler={createBlogHandler} />
               </Togglable>
-              <Blogs blogs={blogs} />
+              <Blogs blogs={blogs} removeBlogHandler={removeBlogHandler} />
             </> :
             <LoginForm
               username={username}
