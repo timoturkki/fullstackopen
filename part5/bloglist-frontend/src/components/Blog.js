@@ -44,17 +44,20 @@ const Blog = ({ blog, removeBlogHandler, updateBlogHandler }) => {
       <li style={blogStyles}>
         <p style={{ margin: 0, cursor: 'pointer' }} onClick={toggleDetailsVisibility}>
           {title}, written by: {author}
-          <button style={{ marginLeft: 12 }} type="button" onClick={toggleDetailsVisibility}>{ detailsIsVisible ? 'Hide details' : 'View details'}</button>
+          <button data-test-details-btn style={{ marginLeft: 12 }} type="button" onClick={toggleDetailsVisibility}>{ detailsIsVisible ? 'Hide details' : 'View details'}</button>
         </p>
 
         {detailsIsVisible && <>
           <div style={{ padding: '6px 0' }}>
             <p style={blogInfoFirstStyles}>url: {url}</p>
-            <p style={blogInfoStyles}>likes: {likes} <button style={{ marginLeft: 12 }} type="button" onClick={addLike}>Like</button></p>
+            <p style={blogInfoStyles}>
+              likes: {likes}
+              <button data-test-like-btn style={{ marginLeft: 12 }} type="button" onClick={addLike}>Like</button>
+            </p>
             <p style={blogInfoStyles}>added by: {user.name}</p>
           </div>
 
-          <button type="button" onClick={removeBlog}>Remove blog</button>
+          <button data-test-remove-btn type="button" onClick={removeBlog}>Remove blog</button>
         </>}
       </li>
     </>
