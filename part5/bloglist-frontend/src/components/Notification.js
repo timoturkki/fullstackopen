@@ -1,4 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
+import PropTypes from 'prop-types';
 
 const Notification = ({ notification, deleteHandler }) => {
   const { msg, isAlert } = notification;
@@ -11,6 +12,11 @@ const Notification = ({ notification, deleteHandler }) => {
   }, [memoizedDeleteHandler]);
 
   return <p className={`notification${isAlert ? ' error' : ''}`}>{msg}</p>;
+};
+
+Notification.propTypes = {
+  notification: PropTypes.object.isRequired,
+  deleteHandler: PropTypes.func.isRequired,
 };
 
 export default Notification;

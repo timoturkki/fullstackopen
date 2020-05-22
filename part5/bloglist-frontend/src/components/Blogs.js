@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Loading from './Loading';
 import Blog from './Blog';
@@ -35,6 +36,12 @@ const Blogs = ({ blogs, removeBlogHandler, updateBlogHandler }) => {
       }
     </>
   );
+};
+
+Blogs.propTypes = {
+  blogs: PropTypes.array.isRequired,
+  removeBlogHandler: PropTypes.func.isRequired,
+  updateBlogHandler: PropTypes.func.isRequired,
 };
 
 export default Blogs;
