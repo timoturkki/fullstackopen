@@ -29,7 +29,7 @@ const Blogs = ({ blogs, removeBlogHandler, updateBlogHandler }) => {
               blog={blog}
               removeBlogHandler={removeBlogHandler}
               updateBlogHandler={updateBlogHandler}
-            />
+            />,
           )}
         </ul>
       }

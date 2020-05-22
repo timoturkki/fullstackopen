@@ -1,51 +1,50 @@
 module.exports = {
-    'env': {
-        'browser': true,
-        'es6': true
+    "env": {
+        "browser": true,
+        "es6": true,
+        "jest/globals": true 
     },
-    'extends': [
-        'eslint:recommended',
-        'plugin:react/recommended'
+    "extends": [ 
+        "eslint:recommended",
+        "plugin:react/recommended"
     ],
-    'globals': {
-        'Atomics': 'readonly',
-        'SharedArrayBuffer': 'readonly'
-    },
-    'parserOptions': {
-        'ecmaFeatures': {
-            'jsx': true
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
         },
-        'ecmaVersion': 11,
-        'sourceType': 'module'
+        "ecmaVersion": 2018,
+        "sourceType": "module"
     },
-    'plugins': [
-        'react'
+    "plugins": [
+        "react", "jest"
     ],
-    'rules': {
-        "react/prop-types": 0,
-        'indent': [
-            'error',
-            2
+    "rules": {
+        "indent": [
+            "error",
+            2  
         ],
-        'linebreak-style': [
-            'error',
-            'unix'
+        "linebreak-style": [
+            "error",
+            "unix"
         ],
-        'quotes': [
-            'error',
-            'single'
+        "quotes": [
+            "error",
+            "single"
         ],
-        'semi': [
-            'error',
-            'always'
+        "semi": [
+            "error",
+            "always"
         ],
-        'eqeqeq': 'error',
-        'no-trailing-spaces': 'error',
-        'object-curly-spacing': [
-            'error', 'always'
+        "eqeqeq": "error",
+        "no-trailing-spaces": "error",
+        "comma-dangle": ['error', 'always-multiline'],
+        "object-curly-spacing": [
+            "error", "always"
         ],
-        'arrow-spacing': [
-            'error', { 'before': true, 'after': true }
-        ]
+        "arrow-spacing": [
+            "error", { "before": true, "after": true }
+        ],
+        "no-console": 0,
+        "react/prop-types": 0
     }
-};
+}

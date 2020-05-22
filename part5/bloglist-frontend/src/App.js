@@ -152,7 +152,7 @@ const App = () => {
           key={`notification-${notification.id}`}
           notification={notification}
           deleteHandler={() => deleteAlertHandler(notification.id)}
-        />
+        />,
       )}
 
       {loading ?

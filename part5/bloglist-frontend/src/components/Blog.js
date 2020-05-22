@@ -23,15 +23,6 @@ const Blog = ({ blog, removeBlogHandler, updateBlogHandler }) => {
     borderWidth: 1,
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
     boxShadow: '0 2px 4px rgba(30, 30, 30, 0.3)',
-    cursor: 'pointer',
-  };
-
-  const buttonStyles = {
-    marginLeft: 12,
-  };
-
-  const blogInfoBoxStyles = {
-    padding: '6px 0',
   };
 
   const blogInfoStyles = {
@@ -49,14 +40,16 @@ const Blog = ({ blog, removeBlogHandler, updateBlogHandler }) => {
 
   return (
     <>
-      <li style={blogStyles} onClick={toggleDetailsVisibility}>
-        {title}, written by: {author}
-        <button style={buttonStyles} type="button" onClick={toggleDetailsVisibility}>{ detailsIsVisible ? 'Hide details' : 'View details'}</button>
+      <li style={blogStyles}>
+        <p style={{ margin: 0, cursor: 'pointer' }} onClick={toggleDetailsVisibility}>
+          {title}, written by: {author}
+          <button style={{ marginLeft: 12 }} type="button" onClick={toggleDetailsVisibility}>{ detailsIsVisible ? 'Hide details' : 'View details'}</button>
+        </p>
 
         {detailsIsVisible && <>
-          <div style={blogInfoBoxStyles}>
+          <div style={{ padding: '6px 0' }}>
             <p style={blogInfoFirstStyles}>url: {url}</p>
-            <p style={blogInfoStyles}>likes: {likes} <button style={buttonStyles} type="button" onClick={addLike}>Like</button></p>
+            <p style={blogInfoStyles}>likes: {likes} <button style={{ marginLeft: 12 }} type="button" onClick={addLike}>Like</button></p>
             <p style={blogInfoStyles}>added by: {user.name}</p>
           </div>
 
