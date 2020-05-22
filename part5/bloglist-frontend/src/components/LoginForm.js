@@ -5,7 +5,7 @@ const LoginForm = ({ username, password, usernameHandler, passwordHandler, login
   return (
     <>
       <h2>Log in please</h2>
-      <form onSubmit={loginHandler}>
+      <form id="login-form" onSubmit={loginHandler}>
         <div>
           <label htmlFor="username">username</label><br />
           <input
@@ -26,7 +26,7 @@ const LoginForm = ({ username, password, usernameHandler, passwordHandler, login
             onChange={passwordHandler}
           />
         </div>
-        <button type="submit">login</button>
+        <button id="login-button" type="submit">login</button>
       </form>
     </>
   );

@@ -41,7 +41,7 @@ const Blog = ({ blog, removeBlogHandler, updateBlogHandler }) => {
 
   return (
     <>
-      <li style={blogStyles}>
+      <li className="blog-item" style={blogStyles}>
         <p style={{ margin: 0, cursor: 'pointer' }} onClick={toggleDetailsVisibility}>
           {title}, written by: {author}
           <button data-test-details-btn style={{ marginLeft: 12 }} type="button" onClick={toggleDetailsVisibility}>{ detailsIsVisible ? 'Hide details' : 'View details'}</button>

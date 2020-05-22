@@ -20,7 +20,7 @@ const CreateBlogForm = ({ createBlogHandler }) => {
     <>
       <h2>Create new blog!</h2>
 
-      <form onSubmit={addBlog}>
+      <form id="blog-form" onSubmit={addBlog}>
         <div>
           <label htmlFor="title">Title</label><br />
           <input
@@ -54,7 +54,7 @@ const CreateBlogForm = ({ createBlogHandler }) => {
           />
         </div>
 
-        <button type="submit">Create</button>
+        <button id="create-blog-btn" type="submit">Create</button>
       </form>
     </>
   );

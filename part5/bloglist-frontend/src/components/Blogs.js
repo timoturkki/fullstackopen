@@ -39,7 +39,6 @@ const Blogs = ({ blogs, removeBlogHandler, updateBlogHandler }) => {
 };
 
 Blogs.propTypes = {
-  blogs: PropTypes.array.isRequired,
   removeBlogHandler: PropTypes.func.isRequired,
   updateBlogHandler: PropTypes.func.isRequired,
 };

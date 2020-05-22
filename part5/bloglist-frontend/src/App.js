@@ -79,7 +79,7 @@ const App = () => {
     try {
       const createdBlog = await blogService.createBlog(newBlog);
       const { title, author } = createdBlog;
-      setBlogs(blogs.concat(createdBlog));
+      setBlogs((blogs || []).concat(createdBlog));
 
       triggerNotification({ msg: `A new blog "${title}" by ${author} added`, isAlert: false });
       setLoading(false);
