@@ -1,10 +1,7 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { generate as generateId } from 'short-id';
+import { connect } from 'react-redux';
 
-const Notification = () => {
-  const notifications = useSelector(state => state.notifications);
-
+const Notification = ({ notifications }) => {
   const style = {
     color: '#2b4832',
     backgroundColor: '#e7f7f5',
@@ -16,8 +13,8 @@ const Notification = () => {
 
   return (
     <>
-      {notifications.map(({ msg }) =>
-        <div key={generateId()} style={style}>
+      {notifications.map(({ msg, id }) =>
+        <div key={id} style={style}>
           {msg}
         </div>,
       )}
@@ -25,4 +22,10 @@ const Notification = () => {
   );
 };
 
-export default Notification;
+const mapStateToProps = (state) => {
+  return {
+    notifications: state.notifications,
+  };
+};
+
+export default connect(mapStateToProps)(Notification);
