@@ -35,6 +35,7 @@ module.exports = {
             "error",
             "always"
         ],
+        "no-case-declarations": "off",
         "eqeqeq": "error",
         "no-trailing-spaces": "error",
         "comma-dangle": ['error', 'always-multiline'],
