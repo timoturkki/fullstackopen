@@ -26,7 +26,7 @@ const anecdoteReducer = (state = initialState, action) => {
       const anecdote = state.find(a => a.id === id);
       const changed = { ...anecdote, votes: anecdote.votes + 1 };
       return state.map(a => a.id !== id ? a : changed );
-    case 'NEW_NOTE':
+    case 'NEW_ANECDOTE':
       return [...state, action.data];
     default:
       return state;
@@ -42,7 +42,7 @@ export const voteAnecdote = (id) => {
 
 export const addAnecdote = (content) => {
   return {
-    type: 'NEW_NOTE',
+    type: 'NEW_ANECDOTE',
     data: asObject(content),
   };
 };
