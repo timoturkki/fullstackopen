@@ -1,10 +1,10 @@
-// allows user to see multiple notification at the same time
+import { generate as generateId } from 'short-id';
 
 const notificationReducer = (state = [], action) => {
   switch (action.type) {
     case 'ADD_NOTIFICATION':
-      const { id, msg, timer } = action;
-      return [...state, { id, msg, timer }];
+      const { id, msg } = action;
+      return [...state, { id, msg }];
     case 'REMOVE_NOTIFICATION':
       return state.filter(s => s.id !== action.id);
     default:
@@ -12,12 +12,15 @@ const notificationReducer = (state = [], action) => {
   }
 };
 
-export const addNotification = (id, msg, timer) => {
-  return {
-    type: 'ADD_NOTIFICATION',
-    id,
-    msg,
-    timer,
+export const addNotification = (msg, duration_s) => {
+  const id = generateId();
+
+  return async (dispatch) => {
+    setTimeout(() => {
+      dispatch({ type: 'REMOVE_NOTIFICATION', id });
+    }, duration_s * 1000);
+
+    dispatch({ type: 'ADD_NOTIFICATION', id, msg });
   };
 };
 

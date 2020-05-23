@@ -1,24 +1,21 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { generate as generateId } from 'short-id';
 
 import { addAnecdote } from '../reducers/anecdoteReducer';
-import { addNotification, removeNotification } from '../reducers/notificationReducer';
+import { addNotification } from '../reducers/notificationReducer';
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch();
 
-  const submitAnecdote = (e) => {
+  const submitAnecdote = async (e) => {
     e.preventDefault();
     const content = e.target.anecdote.value;
-    const notificationId = generateId();
 
     e.target.anecdote.value = '';
+
     dispatch(addAnecdote(content));
 
-    dispatch(addNotification(notificationId, `you just added notification "${content}"`, setTimeout(() => {
-      dispatch(removeNotification(notificationId));
-    }, 5000)));
+    dispatch(addNotification(`you just added notification "${content}"`, 5));
   };
 
   return (
