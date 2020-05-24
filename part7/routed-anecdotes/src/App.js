@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
   Link,
-  Redirect,
   useRouteMatch,
   useHistory,
 } from 'react-router-dom';
@@ -145,8 +143,10 @@ const App = () => {
     }, 10000));
   };
 
-  const anecdoteById = (id) => anecdotes.find(a => a.id === id);
+  /*
+  not needded so far...
 
+  const anecdoteById = (id) => anecdotes.find(a => a.id === id);
   const vote = (id) => {
     const anecdote = anecdoteById(id);
 
@@ -157,6 +157,7 @@ const App = () => {
 
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a));
   };
+  */
 
   const match = useRouteMatch('/anecdotes/:id');
   const anecdote = match ? anecdotes.find(a => a.id === match.params.id) : null;
