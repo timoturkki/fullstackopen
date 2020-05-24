@@ -126,14 +126,26 @@ const App = () => {
   ]);
 
   const [notification, setNotification] = useState('');
+  const [timer, setTimer] = useState(null);
+
+  const history = useHistory();
 
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0);
     setAnecdotes(anecdotes.concat(anecdote));
+    setNotification(`A new anecdote "${anecdote.content}" created!`);
+    history.push('/');
+
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    setTimer(setTimeout(() => {
+      setNotification('');
+    }, 10000));
   };
 
-  const anecdoteById = (id) =>
-    anecdotes.find(a => a.id === id);
+  const anecdoteById = (id) => anecdotes.find(a => a.id === id);
 
   const vote = (id) => {
     const anecdote = anecdoteById(id);
@@ -153,6 +165,7 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      {notification}
       <Switch>
         <Route path="/create">
           <CreateNew addNew={addNew} />
