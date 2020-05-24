@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
 
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+  useRouteMatch,
+  useHistory,
+} from 'react-router-dom';
+
 const Menu = () => {
   const padding = {
     paddingRight: 5,
   };
   return (
     <div>
-      <a href='#' style={padding}>anecdotes</a>
-      <a href='#' style={padding}>create new</a>
-      <a href='#' style={padding}>about</a>
+      <Link to="/" style={padding}>anecdotes</Link>
+      <Link to="/create" style={padding}>create new</Link>
+      <Link to='/about' style={padding}>about</Link>
     </div>
   );
 };
@@ -17,10 +27,24 @@ const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote => <li key={anecdote.id}>
+        <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+      </li>)}
     </ul>
   </div>
 );
+
+const Anecdote = ({ anecdote }) => {
+  const { content, votes, author, info } = anecdote;
+
+  return (
+    <div>
+      <h2>{content} by {author}</h2>
+      <p>has {votes} votes</p>
+      <p>for more info go to <a href={info}>{info}</a></p>
+    </div>
+  );
+};
 
 const About = () => (
   <div>
@@ -122,13 +146,27 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a));
   };
 
+  const match = useRouteMatch('/anecdotes/:id');
+  const anecdote = match ? anecdotes.find(a => a.id === match.params.id) : null;
+
   return (
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
-      <AnecdoteList anecdotes={anecdotes} />
-      <About />
-      <CreateNew addNew={addNew} />
+      <Switch>
+        <Route path="/create">
+          <CreateNew addNew={addNew} />
+        </Route>
+        <Route path="/about">
+          <About />
+        </Route>
+        <Route path="/anecdotes/:id">
+          <Anecdote anecdote={anecdote} />
+        </Route>
+        <Route path="/">
+          <AnecdoteList anecdotes={anecdotes} />
+        </Route>
+      </Switch>
       <Footer />
     </div>
   );
