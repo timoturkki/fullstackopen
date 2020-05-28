@@ -1,10 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import Loading from './Loading';
 import Blog from './Blog';
 
-const Blogs = ({ blogs, removeBlogHandler, updateBlogHandler }) => {
+const Blogs = ({ blogs }) => {
   if (!blogs) {
     return (<p>No blogs added!</p>);
   }
@@ -28,19 +27,12 @@ const Blogs = ({ blogs, removeBlogHandler, updateBlogHandler }) => {
             <Blog
               key={`blog-${blog.id}`}
               blog={blog}
-              removeBlogHandler={removeBlogHandler}
-              updateBlogHandler={updateBlogHandler}
             />,
           )}
         </ul>
       }
     </>
   );
-};
-
-Blogs.propTypes = {
-  removeBlogHandler: PropTypes.func.isRequired,
-  updateBlogHandler: PropTypes.func.isRequired,
 };
 
 export default Blogs;

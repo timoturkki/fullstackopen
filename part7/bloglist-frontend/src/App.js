@@ -12,7 +12,7 @@ import blogService from './services/blogs';
 import loginService from './services/login';
 
 import { addNotification } from './store/reducers/notificationReducer';
-import { initializeBlogs, addBlog, deleteBlog, updateBlog } from './store/reducers/blogReducer';
+import { initializeBlogs } from './store/reducers/blogReducer';
 import { setLoading } from './store/reducers/loadingReducer';
 
 import { getLoggedInUser, setLoggedInUser, removeLoggedInUser } from './utils/user';
@@ -60,19 +60,6 @@ const App = () => {
     }
   };
 
-  const createBlogHandler = async (newBlog) => {
-    blogFormRef.current.toggleVisibility();
-    dispatch(addBlog(newBlog));
-  };
-
-  const removeBlogHandler = async (id, title) => {
-    dispatch(deleteBlog(id, title));
-  };
-
-  const updateBlogHandler = async (id, blog) => {
-    dispatch(updateBlog(id, blog));
-  };
-
   const logutHandler = () => {
     removeLoggedInUser();
     setUser(null);
@@ -96,13 +83,9 @@ const App = () => {
               <h2>Blogs!</h2>
               <p>You are logged in as {user.name} <button type="button" onClick={logutHandler}>logout</button></p>
               <Togglable showButtonLabel='Create blog' hideButtonLabel='Hide form' ref={blogFormRef}>
-                <CreateBlogForm createBlogHandler={createBlogHandler} />
+                <CreateBlogForm />
               </Togglable>
-              <Blogs
-                blogs={blogs}
-                removeBlogHandler={removeBlogHandler}
-                updateBlogHandler={updateBlogHandler}
-              />
+              <Blogs blogs={blogs}/>
             </> :
             <LoginForm
               username={username}
