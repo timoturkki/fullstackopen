@@ -1,9 +1,12 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import Loading from './Loading';
 import Blog from './Blog';
 
-const Blogs = ({ blogs }) => {
+const Blogs = () => {
+  const blogs = useSelector(({ blogs }) => blogs);
+
   if (!blogs) {
     return (<p>No blogs added!</p>);
   }
