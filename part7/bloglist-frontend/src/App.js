@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Blogs from './components/Blogs';
 import LoginForm from './components/LoginForm';
@@ -12,35 +12,23 @@ import blogService from './services/blogs';
 import loginService from './services/login';
 
 import { addNotification } from './store/reducers/notificationReducer';
+import { initializeBlogs, addBlog, deleteBlog, updateBlog } from './store/reducers/blogReducer';
+import { setLoading } from './store/reducers/loadingReducer';
 
 import { getLoggedInUser, setLoggedInUser, removeLoggedInUser } from './utils/user';
 
 const App = () => {
   const dispatch = useDispatch();
-  const [blogs, setBlogs] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const blogs = useSelector(({ blogs }) => blogs);
+  const loading = useSelector(({ loading }) => loading);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const blogFormRef = React.createRef();
 
   useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const blogs = await blogService.getAll();
-
-        if (blogs && blogs.length) {
-          setBlogs(blogs);
-        } else {
-          setBlogs(null);
-        }
-      } catch(_e) {
-        setBlogs(null);
-      }
-    };
-
-    fetchBlogs();
-  }, []);
+    dispatch(initializeBlogs());
+  }, [dispatch]);
 
   useEffect(() => {
     const loggedUser = getLoggedInUser();
@@ -54,7 +42,7 @@ const App = () => {
 
   const loginHandler = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    dispatch(setLoading(true));
 
     try {
       const user = await loginService.login({ username, password });
@@ -65,58 +53,24 @@ const App = () => {
       setUser(user);
       setUsername('');
       setPassword('');
-      setLoading(false);
+      dispatch(setLoading(false));
     } catch (e) {
-      setLoading(false);
+      dispatch(setLoading(false));
       triggerNotification({ msg: 'Wrong credentials, please try again', isAlert: true });
     }
   };
 
   const createBlogHandler = async (newBlog) => {
-    setLoading(true);
     blogFormRef.current.toggleVisibility();
-
-    try {
-      const createdBlog = await blogService.createBlog(newBlog);
-      const { title, author } = createdBlog;
-      setBlogs((blogs || []).concat(createdBlog));
-
-      triggerNotification({ msg: `A new blog "${title}" by ${author} added`, isAlert: false });
-      setLoading(false);
-    } catch (e) {
-      setLoading(false);
-      triggerNotification({ msg: 'Adding new blog failed, please check your blog information', isAlert: true });
-    }
+    dispatch(addBlog(newBlog));
   };
 
   const removeBlogHandler = async (id, title) => {
-    setLoading(true);
-
-    try {
-      await blogService.deleteBlog(id);
-      setBlogs(blogs.filter(b => b.id !== id));
-      triggerNotification({ msg: `Succesfully removed blog: ${title}`, isAlert: false });
-      setLoading(false);
-    } catch (e) {
-      setLoading(false);
-      triggerNotification({ msg: 'Removing blog failed, please try again', isAlert: true });
-    }
+    dispatch(deleteBlog(id, title));
   };
 
   const updateBlogHandler = async (id, blog) => {
-    const { title } = blog;
-
-    try {
-      const savedBlog = await blogService.updateBlog(id, blog);
-      const oldindex = blogs.findIndex(blog => blog.id === id);
-      const blogsCopy = [...blogs];
-      blogsCopy[oldindex] = savedBlog;
-      setBlogs(blogsCopy);
-
-      triggerNotification({ msg: `Succesfully updated blog: ${title}`, isAlert: false });
-    } catch (e) {
-      triggerNotification({ msg: 'Updating blog failed, please try again', isAlert: true });
-    }
+    dispatch(updateBlog(id, blog));
   };
 
   const logutHandler = () => {

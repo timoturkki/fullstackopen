@@ -1,7 +1,7 @@
 import { generate as generateId } from 'short-id';
 
-// this allows rendering multiple notifications at the same time
-// thus making clearing the timeout redundant
+const DEFAULT_NOTIFICATION_DURATION_S = 5;
+
 const notificationReducer = (state = [], action) => {
   switch (action.type) {
     case 'ADD_NOTIFICATION':
@@ -14,7 +14,7 @@ const notificationReducer = (state = [], action) => {
   }
 };
 
-export const addNotification = (notification, duration_s) => {
+export const addNotification = (notification, duration_s = DEFAULT_NOTIFICATION_DURATION_S) => {
   const id = generateId();
 
   return async (dispatch) => {
