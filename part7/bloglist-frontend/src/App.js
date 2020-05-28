@@ -56,17 +56,13 @@ const App = () => {
       dispatch(setLoading(false));
     } catch (e) {
       dispatch(setLoading(false));
-      triggerNotification({ msg: 'Wrong credentials, please try again', isAlert: true });
+      dispatch(addNotification({ msg: 'Wrong credentials, please try again', isAlert: true }, 5));
     }
   };
 
   const logutHandler = () => {
     removeLoggedInUser();
     setUser(null);
-  };
-
-  const triggerNotification = (newNotification) => {
-    dispatch(addNotification(newNotification, 5));
   };
 
   return (
