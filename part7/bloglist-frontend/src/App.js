@@ -1,28 +1,28 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { generate as generateId } from 'shortid';
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import Blogs from './components/Blogs';
 import LoginForm from './components/LoginForm';
 import Loading from './components/Loading';
 import CreateBlogForm from './components/CreateBlogForm';
-import Notification from './components/Notification';
+import Notifications from './components/Notifications';
 import Togglable from './components/Togglable';
 
 import blogService from './services/blogs';
 import loginService from './services/login';
 
+import { addNotification } from './store/reducers/notificationReducer';
+
 import { getLoggedInUser, setLoggedInUser, removeLoggedInUser } from './utils/user';
 
 const App = () => {
+  const dispatch = useDispatch();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [notifications, setNotifications] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const blogFormRef = React.createRef();
-  const notificationsRef = useRef(notifications);
-  notificationsRef.current = notifications;
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -125,35 +125,14 @@ const App = () => {
   };
 
   const triggerNotification = (newNotification) => {
-    const matchingIndex = notifications.findIndex(n => n.msg === newNotification.msg);
-    const notificationWithId = { ...newNotification, id: generateId() };
-
-    // if notification with same message exists already
-    // then replace it so the timer starts again
-    if (matchingIndex > -1) {
-      const notificationsCopy = [...notifications];
-      notificationsCopy[matchingIndex] = notificationWithId;
-      setNotifications(notificationsCopy);
-    } else {
-      // otherwise add the new notification to the list
-      // so multiple different can be shown at the same time
-      setNotifications(notifications.concat(notificationWithId));
-    }
+    dispatch(addNotification(newNotification, 5));
   };
-
-  const deleteAlertHandler = (id) => setNotifications(notificationsRef.current.filter(n => n.id !== id));
 
   return (
     <>
       <h1>Welcome to browse some blogs!</h1>
 
-      {notifications.map((notification) =>
-        <Notification
-          key={`notification-${notification.id}`}
-          notification={notification}
-          deleteHandler={() => deleteAlertHandler(notification.id)}
-        />,
-      )}
+      <Notifications />
 
       {loading ?
         <Loading /> :
