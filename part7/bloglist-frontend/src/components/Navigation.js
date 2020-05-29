@@ -11,12 +11,15 @@ const Navigation = () => {
   const flex = {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'space-between',
   };
 
   return (
     <div style={flex}>
-      <Link to="/" style={padding}>Blogs</Link>
-      <Link to="/users" style={padding}>Users</Link>
+      <div>
+        <Link to="/" style={padding}>Blogs</Link>
+        <Link to="/users" style={padding}>Users</Link>
+      </div>
       <UserStatus />
     </div>
   );

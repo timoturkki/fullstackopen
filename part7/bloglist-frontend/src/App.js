@@ -6,8 +6,10 @@ import Notifications from './components/Notifications';
 import Navigation from './components/Navigation';
 import Frontpage from './views/Frontpage';
 import Users from './views/Users';
+import User from './views/User';
 
 import { initializeBlogs } from './store/reducers/blogReducer';
+import { initializeUsers } from './store/reducers/usersReducer';
 import { initUser } from './store/reducers/userReducer';
 
 const App = () => {
@@ -15,6 +17,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeBlogs());
+    dispatch(initializeUsers());
     dispatch(initUser());
   }, [dispatch]);
 
@@ -26,12 +29,9 @@ const App = () => {
       <Notifications />
 
       <Switch>
-        <Route path="/users">
-          <Users />
-        </Route>
-        <Route path="/">
-          <Frontpage />
-        </Route>
+        <Route exact path="/" component={Frontpage} />
+        <Route exact path="/users" component={Users} />
+        <Route exact path="/users/:id" component={User} />
       </Switch>
     </>
   );

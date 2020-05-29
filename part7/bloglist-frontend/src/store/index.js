@@ -6,12 +6,14 @@ import notificationReducer from './reducers/notificationReducer';
 import blogReducer from './reducers/blogReducer';
 import loadingReducer from './reducers/loadingReducer';
 import userReducer from './reducers/userReducer';
+import usersReducer from './reducers/usersReducer';
 
 const reducer = combineReducers({
   notifications: notificationReducer,
   blogs: blogReducer,
   loading: loadingReducer,
   user: userReducer,
+  users: usersReducer,
 });
 
 const store = createStore(reducer,
