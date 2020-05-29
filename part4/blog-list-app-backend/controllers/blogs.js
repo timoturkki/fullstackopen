@@ -67,19 +67,6 @@ blogsRouter.put('/:id', async (req, res) => {
   const { title, author, url, likes } = req.body;
   const blog = { title, author, url, likes };
 
-  const decodedToken = decodeToken(req.token);
-
-  if (!req.token || !decodedToken.id) {
-    return res.status(401).json({ error: 'token missing or invalid' });
-  }
-
-  const user = await User.findById(decodedToken.id);
-  const blogToUpdate = await Blog.findById(id);
-
-  if (blogToUpdate.user.toString() !== user._id.toString()) {
-    return res.status(401).json({ error: 'not authorized to perform this operation' });
-  }
-
   const updatedBlog = await Blog.findByIdAndUpdate(id, blog, { new: true });
 
   res.json(updatedBlog.toJSON());
