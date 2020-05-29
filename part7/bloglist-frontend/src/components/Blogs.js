@@ -13,6 +13,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 20,
     backgroundColor: theme.palette.background.paper,
   },
+  list: {
+    padding: 0,
+  },
 }));
 
 const Blogs = () => {
@@ -30,11 +33,12 @@ const Blogs = () => {
       {!blogs.length ?
         <Loading /> :
         <div className={classes.root}>
-          <List>
-            {sortedByLikes.map((blog) =>
+          <List className={classes.list}>
+            {sortedByLikes.map((blog, i) =>
               <Blog
                 key={`blog-${blog.id}`}
                 blog={blog}
+                index={i}
               />,
             )}
           </List>

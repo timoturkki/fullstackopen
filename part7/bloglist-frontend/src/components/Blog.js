@@ -5,11 +5,12 @@ import { Link } from 'react-router-dom';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, index }) => {
   const { title, author, id } = blog;
+  const background = { backgroundColor: 'rgba(255,255,255, 0.05)' };
 
   return (
-    <li>
+    <li style={index % 2 === 0 ? background : {}}>
       <Link to={`/blogs/${id}`}>
         <ListItem button>
           <ListItemText primary={`${title}, written by: ${author}`} />
@@ -21,6 +22,7 @@ const Blog = ({ blog }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
+  index: PropTypes.number.isRequired,
 };
 
 export default Blog;

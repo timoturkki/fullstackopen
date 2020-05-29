@@ -2,6 +2,9 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
 
+import Container from '@material-ui/core/Container';
+
+import UserStatus from './components/UserStatus';
 import Notifications from './components/Notifications';
 import Navigation from './components/Navigation';
 import Frontpage from './views/Frontpage';
@@ -25,16 +28,20 @@ const App = () => {
   return (
     <>
       <Navigation />
-      <h1>Welcome to browse some blogs!</h1>
 
-      <Notifications />
+      <Container maxWidth="xl">
+        <UserStatus />
+        <h1>Welcome to browse some blogs!</h1>
 
-      <Switch>
-        <Route exact path="/" component={Frontpage} />
-        <Route exact path="/users" component={Users} />
-        <Route exact path="/users/:id" component={UserDetails} />
-        <Route exact path="/blogs/:id" component={BlogDetails} />
-      </Switch>
+        <Notifications />
+
+        <Switch>
+          <Route exact path="/" component={Frontpage} />
+          <Route exact path="/users" component={Users} />
+          <Route exact path="/users/:id" component={UserDetails} />
+          <Route exact path="/blogs/:id" component={BlogDetails} />
+        </Switch>
+      </Container>
     </>
   );
 };
