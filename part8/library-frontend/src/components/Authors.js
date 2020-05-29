@@ -1,11 +1,11 @@
-  
-import React from 'react'
+
+import React from 'react';
 
 const Authors = (props) => {
   if (!props.show) {
-    return null
+    return null;
   }
-  const authors = []
+  const authors = [];
 
   return (
     <div>
@@ -26,13 +26,13 @@ const Authors = (props) => {
               <td>{a.name}</td>
               <td>{a.born}</td>
               <td>{a.bookCount}</td>
-            </tr>
+            </tr>,
           )}
         </tbody>
       </table>
 
     </div>
-  )
-}
+  );
+};
 
-export default Authors
+export default Authors;

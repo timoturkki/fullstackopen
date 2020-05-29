@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
 
 const Books = (props) => {
   if (!props.show) {
-    return null
+    return null;
   }
 
-  const books = []
+  const books = [];
 
   return (
     <div>
@@ -27,12 +27,12 @@ const Books = (props) => {
               <td>{a.title}</td>
               <td>{a.author}</td>
               <td>{a.published}</td>
-            </tr>
+            </tr>,
           )}
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};
 
-export default Books
+export default Books;
