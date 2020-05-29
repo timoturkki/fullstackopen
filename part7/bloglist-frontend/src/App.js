@@ -6,7 +6,8 @@ import Notifications from './components/Notifications';
 import Navigation from './components/Navigation';
 import Frontpage from './views/Frontpage';
 import Users from './views/Users';
-import User from './views/User';
+import UserDetails from './views/UserDetails';
+import BlogDetails from './views/BlogDetails';
 
 import { initializeBlogs } from './store/reducers/blogReducer';
 import { initializeUsers } from './store/reducers/usersReducer';
@@ -31,7 +32,8 @@ const App = () => {
       <Switch>
         <Route exact path="/" component={Frontpage} />
         <Route exact path="/users" component={Users} />
-        <Route exact path="/users/:id" component={User} />
+        <Route exact path="/users/:id" component={UserDetails} />
+        <Route exact path="/blogs/:id" component={BlogDetails} />
       </Switch>
     </>
   );

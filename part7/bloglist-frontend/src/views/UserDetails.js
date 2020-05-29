@@ -2,13 +2,11 @@ import React from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-const User = () => {
+const UserDetails = () => {
   const match = useRouteMatch('/users/:id');
   const user = useSelector(({ users }) => {
-    return match ? users.find(u => u.id === match.params.id) : null;
+    return match ? users.find(user => user.id === match.params.id) : null;
   });
-
-  console.log(user);
 
   if (!user) {
     return (
@@ -33,4 +31,4 @@ const User = () => {
   );
 };
 
-export default User;
+export default UserDetails;

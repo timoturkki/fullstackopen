@@ -1,26 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
-
-import { deleteBlog, updateBlog } from '../store/reducers/blogReducer';
+import { Link } from 'react-router-dom';
 
 const Blog = ({ blog }) => {
-  const dispatch = useDispatch();
-  const [detailsIsVisible, setDetailsIsVisible] = useState(false);
-  const { title, author, id, url, user, likes } = blog;
-
-  const removeBlog = () => {
-    if (window.confirm(`Are you sure you want to delete this blog: ${title}`)) {
-      dispatch(deleteBlog(id, title));
-    }
-  };
-
-  const addLike = (e) => {
-    e.stopPropagation();
-    dispatch(updateBlog(id, { author, title, url, user: user.id, likes: likes + 1 }));
-  };
-
-  const toggleDetailsVisibility = () => setDetailsIsVisible(!detailsIsVisible);
+  const { title, author, id } = blog;
 
   const blogStyles = {
     margin: '12px 0',
@@ -30,39 +13,12 @@ const Blog = ({ blog }) => {
     boxShadow: '0 2px 4px rgba(30, 30, 30, 0.3)',
   };
 
-  const blogInfoStyles = {
-    borderBottom: '1px solid rgb(220, 216, 216)',
-    margin: '6px 0',
-    padding: '6px 0',
-    display: 'flex',
-    alignItems: 'center',
-  };
-
-  const blogInfoFirstStyles = {
-    ...blogInfoStyles,
-    borderTop: '1px solid rgb(220, 216, 216)',
-  };
-
   return (
     <>
       <li className="blog-item" style={blogStyles}>
-        <p style={{ margin: 0, cursor: 'pointer' }} onClick={toggleDetailsVisibility}>
-          {title}, written by: {author}
-          <button data-test-details-btn style={{ marginLeft: 12 }} type="button" onClick={toggleDetailsVisibility}>{ detailsIsVisible ? 'Hide details' : 'View details'}</button>
+        <p style={{ margin: 0, cursor: 'pointer' }}>
+          <Link to={`/blogs/${id}`}>{title}, written by: {author}</Link>
         </p>
-
-        {detailsIsVisible && <>
-          <div style={{ padding: '6px 0' }}>
-            <p style={blogInfoFirstStyles}>url: {url}</p>
-            <p style={blogInfoStyles}>
-              likes: {likes}
-              <button data-test-like-btn style={{ marginLeft: 12 }} type="button" onClick={addLike}>Like</button>
-            </p>
-            <p style={blogInfoStyles}>added by: {user.name}</p>
-          </div>
-
-          <button data-test-remove-btn type="button" onClick={removeBlog}>Remove blog</button>
-        </>}
       </li>
     </>
   );
