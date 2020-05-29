@@ -2,10 +2,13 @@ const blogsRouter = require('express').Router();
 
 const Blog = require('../models/blog');
 const User = require('../models/user');
+const Comment = require('../models/comment');
 const { decodeToken } = require('../utils/authentication');
 
 blogsRouter.get('/', async (_req, res) => {
-  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
+  const blogs = await Blog.find({})
+    .populate('user', { username: 1, name: 1 })
+    .populate('comments', { comment: 1 });
 
   res.json(blogs.map(blog => blog.toJSON()));
 });
@@ -70,6 +73,27 @@ blogsRouter.put('/:id', async (req, res) => {
   const updatedBlog = await Blog.findByIdAndUpdate(id, blog, { new: true });
 
   res.json(updatedBlog.toJSON());
+});
+
+blogsRouter.post('/:id/comments', async (req, res) => {
+  const id = req.params.id;
+  const { comment } = req.body;
+
+  const blog = await Blog.findById(id);
+
+  if (!blog) {
+    res.status(404).end();
+  }
+
+  const newComment = new Comment({ comment, blog: blog._id });
+  const savedComment = await newComment.save();
+
+  console.log(savedComment);
+
+  blog.comments = blog.comments.concat(savedComment._id);
+  await blog.save();
+
+  res.status(201).json(savedComment.toJSON());
 });
 
 module.exports = blogsRouter;
