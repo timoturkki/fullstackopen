@@ -1,27 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Button from '@material-ui/core/Button';
+
 import UserStatus from './UserStatus';
 
 const Navigation = () => {
-  const padding = {
-    paddingRight: 5,
-  };
-
-  const flex = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  };
-
   return (
-    <div style={flex}>
-      <div>
-        <Link to="/" style={padding}>Blogs</Link>
-        <Link to="/users" style={padding}>Users</Link>
-      </div>
+    <>
+      <AppBar position="static" color="inherit">
+        <Toolbar color="inherit">
+          <Button color="primary" component={Link} to="/">Blogs</Button>
+          <Button color="primary" component={Link} to="/users">Users</Button>
+        </Toolbar>
+      </AppBar>
+
       <UserStatus />
-    </div>
+    </>
   );
 };
 

@@ -4,7 +4,19 @@ import { useSelector } from 'react-redux';
 import Loading from './Loading';
 import Blog from './Blog';
 
+import List from '@material-ui/core/List';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+    marginTop: 20,
+    backgroundColor: theme.palette.background.paper,
+  },
+}));
+
 const Blogs = () => {
+  const classes = useStyles();
   const blogs = useSelector(({ blogs }) => blogs);
 
   if (!blogs) {
@@ -13,26 +25,20 @@ const Blogs = () => {
 
   const sortedByLikes = blogs.sort((a, b) => b.likes - a.likes);
 
-  const blogsStyles = {
-    margin: '12px 0',
-    padding: '0 8px',
-    border: '1px solid #2b4832',
-    borderWidth: 1,
-    backgroundColor: '#e7f7f5',
-  };
-
   return (
     <>
       {!blogs.length ?
         <Loading /> :
-        <ul className="unstyled-list" style={blogsStyles}>
-          {sortedByLikes.map((blog) =>
-            <Blog
-              key={`blog-${blog.id}`}
-              blog={blog}
-            />,
-          )}
-        </ul>
+        <div className={classes.root}>
+          <List>
+            {sortedByLikes.map((blog) =>
+              <Blog
+                key={`blog-${blog.id}`}
+                blog={blog}
+              />,
+            )}
+          </List>
+        </div>
       }
     </>
   );
