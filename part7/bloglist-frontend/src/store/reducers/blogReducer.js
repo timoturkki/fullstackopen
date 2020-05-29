@@ -6,6 +6,11 @@ const blogReducer = (state = [], action) => {
   switch (action.type) {
     case 'UPDATE_BLOG':
       return state.map(a => a.id !== action.data.id ? a : action.data );
+    case 'NEW_COMMENT':
+      return state.map(a => a.id !== action.data.blogId ? a : {
+        ...a,
+        comments: [...a.comments, action.data],
+      });
     case 'NEW_BLOG':
       return [...state, action.data];
     case 'DELETE_BLOG':
@@ -34,6 +39,24 @@ export const addBlog = (blog) => {
     }
   };
 };
+
+export const addComment = (blogId, comment) => {
+  return async dispatch => {
+    dispatch(setLoading(true));
+
+    try {
+      const data = await blogsService.commentBlog(blogId, comment);
+
+      dispatch(addNotification({ msg: 'Your comment has been sent!', isAlert: false }));
+      dispatch({ type: 'NEW_COMMENT', data: { ...data, blogId } });
+      dispatch(setLoading(false));
+    } catch (e) {
+      dispatch(addNotification({ msg: 'Adding new comment failed, please check your blog information', isAlert: true }));
+      dispatch(setLoading(false));
+    }
+  };
+};
+
 
 export const deleteBlog = (id, title) => {
   return async dispatch => {

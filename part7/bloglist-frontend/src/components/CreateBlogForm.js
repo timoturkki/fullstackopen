@@ -6,6 +6,7 @@ import { addBlog } from '../store/reducers/blogReducer';
 import  { useField } from '../hooks';
 
 import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 
 const CreateBlogForm = () => {
   const dispatch = useDispatch();
@@ -29,23 +30,12 @@ const CreateBlogForm = () => {
 
   return (
     <>
-      <h2>Create new blog!</h2>
+      <h3 style={{ marginTop: 40 }}>Create new blog!</h3>
 
       <form id="blog-form" onSubmit={submitBlogHandler}>
-        <div>
-          <label htmlFor={title.attr.id}>Title</label><br />
-          <input { ...title.attr } />
-        </div>
-
-        <div>
-          <label htmlFor={author.attr.id}>Author</label><br />
-          <input { ...author.attr } />
-        </div>
-
-        <div>
-          <label htmlFor={url.attr.id}>Url</label><br />
-          <input { ...url.attr } />
-        </div>
+        <TextField fullWidth { ...title.attr } label={title.attr.id} />
+        <TextField fullWidth { ...author.attr } label={author.attr.id} />
+        <TextField fullWidth { ...url.attr } label={url.attr.id} />
 
         <Button style={{ marginTop: 12 }} type="submit" variant="contained" color="primary">Create</Button>
       </form>
