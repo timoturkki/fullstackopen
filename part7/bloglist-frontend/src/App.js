@@ -1,18 +1,17 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { Switch, Route } from 'react-router-dom';
 
-import LoginForm from './components/LoginForm';
-import Loading from './components/Loading';
 import Notifications from './components/Notifications';
-import LoggedInContent from './components/LoggedInContent';
+import Navigation from './components/Navigation';
+import Frontpage from './views/Frontpage';
+import Users from './views/Users';
 
 import { initializeBlogs } from './store/reducers/blogReducer';
 import { initUser } from './store/reducers/userReducer';
 
 const App = () => {
   const dispatch = useDispatch();
-  const loading = useSelector(({ loading }) => loading);
-  const user = useSelector(({ user }) => user);
 
   useEffect(() => {
     dispatch(initializeBlogs());
@@ -21,19 +20,19 @@ const App = () => {
 
   return (
     <>
+      <Navigation />
       <h1>Welcome to browse some blogs!</h1>
 
       <Notifications />
 
-      {loading ?
-        <Loading /> :
-        <>
-          {user ?
-            <LoggedInContent /> :
-            <LoginForm />
-          }
-        </>
-      }
+      <Switch>
+        <Route path="/users">
+          <Users />
+        </Route>
+        <Route path="/">
+          <Frontpage />
+        </Route>
+      </Switch>
     </>
   );
 };
