@@ -5,6 +5,8 @@ import { addBlog } from '../store/reducers/blogReducer';
 
 import  { useField } from '../hooks';
 
+import Button from '@material-ui/core/Button';
+
 const CreateBlogForm = () => {
   const dispatch = useDispatch();
   const title = useField('text', 'title');
@@ -45,7 +47,7 @@ const CreateBlogForm = () => {
           <input { ...url.attr } />
         </div>
 
-        <button id="create-blog-btn" type="submit">Create</button>
+        <Button style={{ marginTop: 12 }} type="submit" variant="contained" color="primary">Create</Button>
       </form>
     </>
   );

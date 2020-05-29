@@ -2,8 +2,9 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 
 import { loginUser } from '../store/reducers/userReducer';
-
 import  { useField } from '../hooks';
+
+import Button from '@material-ui/core/Button';
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ const LoginForm = () => {
           <label htmlFor={password.attr.id}>password</label><br />
           <input { ...password.attr } />
         </div>
-        <button id="login-button" type="submit">login</button>
+        <Button style={{ marginTop: 12 }} type="submit" variant="contained" color="primary">Login</Button>
       </form>
     </>
   );

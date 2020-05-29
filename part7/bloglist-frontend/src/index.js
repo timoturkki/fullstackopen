@@ -11,12 +11,6 @@ import './index.css';
 
 const theme = createMuiTheme({
   palette: {
-    primary: {
-      main: 'rgba(255, 255, 255, 1)',
-    },
-    secondary: {
-      main: 'rgba(0, 0, 0, 1)',
-    },
     type: 'dark',
   },
 });

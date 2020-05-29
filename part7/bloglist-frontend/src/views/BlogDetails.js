@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { updateBlog } from '../store/reducers/blogReducer';
 
+import Button from '@material-ui/core/Button';
+
 const BlogDetails = () => {
   const dispatch = useDispatch();
   const match = useRouteMatch('/blogs/:id');
@@ -30,7 +32,7 @@ const BlogDetails = () => {
       <p>url: {url}</p>
       <p>
         likes: {likes}
-        <button data-test-like-btn style={{ marginLeft: 12 }} type="button" onClick={addLike}>Like</button>
+        <Button style={{ marginLeft: 12 }} type="submit" variant="contained" color="primary" onClick={addLike}>Like</Button>
       </p>
       <p>added by: {user.name}</p>
     </>
