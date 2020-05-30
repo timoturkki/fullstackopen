@@ -1,10 +1,12 @@
 require('dotenv').config();
 
-const { ApolloServer, gql } = require('apollo-server');
+const jwt = require('jsonwebtoken');
+const { ApolloServer, gql, UserInputError, AuthenticationError } = require('apollo-server');
 
 const mongoose = require('mongoose');
 const Book = require('./models/book');
 const Author = require('./models/author');
+const User = require('./models/user');
 
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
@@ -17,6 +19,16 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
   });
 
 const typeDefs = gql`
+  type User {
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+  }
+
+  type Token {
+    value: String!
+  }
+
   type Book {
     title: String!
     published: Int!
@@ -37,6 +49,7 @@ const typeDefs = gql`
     bookCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+    me: User
   }
 
   type Mutation {
@@ -50,6 +63,14 @@ const typeDefs = gql`
       name: String!
       setBornTo: Int!
     ): Author
+    createUser(
+      username: String!
+      favoriteGenre: String!
+    ): User
+    login(
+      username: String!
+      password: String!
+    ): Token
   }  
 `;
 
@@ -58,7 +79,7 @@ const resolvers = {
     authorCount: () => Author.collection.countDocuments(),
     bookCount: () => Book.collection.countDocuments(),
     allBooks: async (root, args) => {
-      const books = await Book.find({});
+      const books = await Book.find({}).populate('author', { name: 1, born: 1 });
 
       if (!args.author && !args.genre) {
         return books;
@@ -67,7 +88,7 @@ const resolvers = {
       let filtered = books;
 
       if (args.author) {
-        filtered = filtered.filter(book => book.author === args.author);
+        filtered = filtered.filter(book => book.author.name === args.author);
       }
 
       if (args.genre) {
@@ -76,15 +97,15 @@ const resolvers = {
 
       return filtered;
     },
-    allAuthors: async () => {
-      return await Author.find({});
-    },
+    allAuthors: async () => await Author.find({}),
+    me: (root, args, { currentUser }) => currentUser,
   },
   Author: {
     bookCount: async (root) => {
       const books = await Book.find({});
-
-      return books.filter(book => book.author === root.name).length;
+      //console.log(root._id);
+      console.log(books);
+      return books.filter(book => book.author.toString() === root._id.toString()).length;
     },
   },
   Book: {
@@ -93,34 +114,73 @@ const resolvers = {
     },
   },
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, { currentUser }) => {
       const author = await Author.findOne({ name: args.author });
+      let book;
 
-      if (author) {
-        const book = new Book({ ...args, author });
-        await book.save();
-
-        return book;
-      } else {
-        const newAuthor = new Author({ name: args.author, born: null });
-        const book = new Book({ ...args, author: newAuthor });
-        await book.save();
-        await newAuthor.save();
-
-        return book;
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated');
       }
+
+      try {
+        if (author) {
+          book = new Book({ ...args, author });
+        } else {
+          const newAuthor = new Author({ name: args.author, born: null });
+          book = new Book({ ...args, author: newAuthor });
+          await newAuthor.save();
+        }
+
+        await book.save();
+      } catch(e) {
+        throw new UserInputError(e.message, { invalidArgs: args });
+      }
+
+      return book;
     },
-    editAuthor: async (root, args) => {
+    editAuthor: async (root, args, { currentUser }) => {
       const author = await Author.findOne({ name: args.name });
+
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated');
+      }
 
       if (!author) {
         return null;
       }
 
-      author.born = args.born;
-      await author.save();
+      author.born = args.setBornTo;
+
+      try {
+        await author.save();
+      } catch(e) {
+        throw new UserInputError(e.message, { invalidArgs: args });
+      }
 
       return author;
+    },
+    createUser: (root, args) => {
+      const { username, favoriteGenre } = args;
+      const user = new User({ username, favoriteGenre });
+
+      return user.save()
+        .catch(e => {
+          throw new UserInputError(e.message, { invalidArgs: args });
+        });
+    },
+    login: async (root, args) => {
+      const user = await User.findOne({ username: args.username });
+
+      if ( !user || args.password !== 'secret' ) {
+        throw new UserInputError('wrong credentials');
+      }
+
+      const userForToken = {
+        username: user.username,
+        id: user._id,
+      };
+
+      return { value: jwt.sign(userForToken, process.env.JWT_SECRET) };
     },
   },
 };
@@ -128,6 +188,17 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: async ({ req }) => {
+    const auth = req ? req.headers.authorization : null;
+
+    if (auth && auth.toLowerCase().startsWith('bearer ')) {
+      const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET);
+
+      const currentUser = await User.findById(decodedToken.id);
+
+      return { currentUser };
+    }
+  },
 });
 
 server.listen().then(({ url }) => {
