@@ -44,6 +44,12 @@ const App = () => {
     }, 5000);
   };
 
+  if (user.loading) {
+    return <p>Loading...</p>;
+  }
+
+  const userGenre = user.data.me.favoriteGenre;
+
   return (
     <div>
       <div>
@@ -63,10 +69,8 @@ const App = () => {
 
       <Authors show={page === 'authors'} token={token} />
       <Books show={page === 'books'} />
-      <NewBook show={page === 'add'} />
-      {user && user.data && user.data.me &&
-        <Recommended show={page === 'recommended'} genre={user.data.me.favoriteGenre} />
-      }
+      <NewBook show={page === 'add'} userGenre={userGenre} />
+      <Recommended show={page === 'recommended'} genre={userGenre} />
       <LoginForm setToken={setToken} loginHandler={loginHandler} errorHandler={errorHandler} show={page === 'login'} />
 
     </div>

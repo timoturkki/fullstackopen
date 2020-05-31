@@ -18,8 +18,6 @@ const Recommended = ({ show, genre }) => {
     return <p>Loading...</p>;
   }
 
-  const allBooks = booksByGenre.data.allBooks;
-
   return (
     <div>
       <h2>Recommendations</h2>
@@ -35,7 +33,7 @@ const Recommended = ({ show, genre }) => {
               published
             </th>
           </tr>
-          {allBooks.map(({ title, author, published }) =>
+          {booksByGenre.data.allBooks.map(({ title, author, published }) =>
             <tr key={title}>
               <td>{title}</td>
               <td>{author.name}</td>
