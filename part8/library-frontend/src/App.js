@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { useApolloClient } from '@apollo/client';
 
-import { useQuery } from '@apollo/client';
+import { useQuery, useSubscription } from '@apollo/client';
 
-import { USER } from './queries';
+import { USER, BOOK_ADDED, ALL_BOOKS } from './queries';
 import Authors from './components/Authors';
 import Books from './components/Books';
 import NewBook from './components/NewBook';
@@ -24,6 +24,27 @@ const App = () => {
       setToken(token);
     }
   }, []);
+
+  const updateCacheWith = (addedBook) => {
+    const includedIn = (set, object) =>
+      set.map(p => p.id).includes(object.id);
+
+    const dataInStore = client.readQuery({ query: ALL_BOOKS });
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: { allBooks : dataInStore.allBooks.concat(addedBook) },
+      });
+    }
+  };
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const addedBook = subscriptionData.data.bookAdded;
+      window.alert(`${addedBook.title} added`);
+      updateCacheWith(addedBook);
+    },
+  });
 
   const logoutHandler = () => {
     setToken(null);
