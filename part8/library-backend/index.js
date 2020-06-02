@@ -42,8 +42,9 @@ const typeDefs = gql`
   type Author {
     name: String!
     id: ID!
-    born: Int,
+    born: Int
     bookCount: Int!
+    books: [String!]!
   }
 
   type Query {
@@ -108,8 +109,7 @@ const resolvers = {
   },
   Author: {
     bookCount: async (root) => {
-      const books = await Book.find({});
-      return books.filter(book => book.author.toString() === root._id.toString()).length;
+      return root.books.length;
     },
   },
   Book: {
@@ -129,9 +129,12 @@ const resolvers = {
       try {
         if (author) {
           book = new Book({ ...args, author });
+          author.books = author.books.concat(book._id);
+          await author.save();
         } else {
-          const newAuthor = new Author({ name: args.author, born: null });
-          book = new Book({ ...args, author: newAuthor });
+          book = new Book({ ...args });
+          const newAuthor = new Author({ name: args.author, born: null, books: [book._id] });
+          book.author = newAuthor;
           await newAuthor.save();
         }
 
