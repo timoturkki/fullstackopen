@@ -48,7 +48,7 @@ const App = () => {
     return <p>Loading...</p>;
   }
 
-  const userGenre = user.data.me.favoriteGenre;
+  const userGenre = user && user.data && user.data.me ? user.data.me.favoriteGenre : null;
 
   return (
     <div>
