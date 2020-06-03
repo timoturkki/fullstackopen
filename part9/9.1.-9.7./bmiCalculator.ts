@@ -11,13 +11,13 @@ const parseBmiArguments = (args: Array<string>): BmiInputs => {
     return {
       height: Number(args[2]),
       weight: Number(args[3])
-    }
+    };
   } else {
     throw new Error('Height and weight must be inputted as numbers!');
   }
-}
+};
 
-const calculateBmi = (height_cm: number, weight_kg: number): string => { 
+export const calculateBmi = (height_cm: number, weight_kg: number): string => { 
   const bmi = weight_kg / Math.pow(height_cm / 100, 2);
   
   if (bmi < 18.5) {
@@ -29,12 +29,16 @@ const calculateBmi = (height_cm: number, weight_kg: number): string => {
   } else {
     return 'Obese';
   }
-}
+};
 
 try {
   const { height, weight } = parseBmiArguments(process.argv);
 
   console.log(calculateBmi(height, weight));
 } catch (e) {
-  console.log('Something went wrong, message: ', e.message);
+  if (e instanceof Error) {
+    console.log('Something went wrong, message: ', e.message );
+  } else {
+    console.log(e);
+  }
 }

@@ -23,11 +23,11 @@ const parseExerciseArguments = (args: Array<string>): ExerciseInputs => {
     return {
       trainingData: trainingDataArgs.map(data => Number(data)),
       target: Number(targetArg)
-    }
+    };
   } else {
     throw new Error('Please check that all your inputs are numbers!');
   }
-}
+};
 
 const calculateExercises = (exerciseData: Array<number>, target: number): ExerciseResult => {
   const periodLength = exerciseData.length;
@@ -50,12 +50,16 @@ const calculateExercises = (exerciseData: Array<number>, target: number): Exerci
   }
 
   return { periodLength, trainingDays, success, rating,ratingDescription, target, average };
-}
+};
 
 try {
   const { trainingData, target } = parseExerciseArguments(process.argv);
 
   console.log(calculateExercises(trainingData, target));
 } catch (e) {
-  console.log('Something went wrong, message: ', e.message);
+  if (e instanceof Error) {
+    console.log('Something went wrong, message: ', e.message );
+  } else {
+    console.log(e);
+  }
 }
