@@ -10,7 +10,7 @@ const getEntries = (): PatientEntry[] => {
 };
 
 const getPublicEntries = (): PublicPatientEntry[] => {
-  return patients.map(patient => ({ ...patient, ssn: undefined }));
+  return patients.map(patient => ({ ...patient, ssn: undefined, entries: undefined }));
 };
 
 const addEntry = (entry: NewPatientEntry): PatientEntry => {
