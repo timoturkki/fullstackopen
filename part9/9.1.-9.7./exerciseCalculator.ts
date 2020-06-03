@@ -1,11 +1,32 @@
+interface ExerciseInputs {
+  trainingData: Array<number>;
+  target: number;
+}
+
 interface ExerciseResult {
-  periodLength: number,
-  trainingDays: number,
-  success: boolean,
-  rating: number,
-  ratingDescription: string,
-  target: number,
-  average: number,
+  periodLength: number;
+  trainingDays: number;
+  success: boolean;
+  rating: number;
+  ratingDescription: string;
+  target: number;
+  average: number;
+}
+
+const parseExerciseArguments = (args: Array<string>): ExerciseInputs => {
+  if (args.length < 4) throw new Error('Not enough arguments');
+  const exerciseArgs = args.slice(2);
+  const targetArg = exerciseArgs[0];
+  const trainingDataArgs = exerciseArgs.slice(1);
+
+  if (trainingDataArgs.every(data => !isNaN(Number(data))) && !isNaN(Number(targetArg))) {
+    return {
+      trainingData: trainingDataArgs.map(data => Number(data)),
+      target: Number(targetArg)
+    }
+  } else {
+    throw new Error('Please check that all your inputs are numbers!');
+  }
 }
 
 const calculateExercises = (exerciseData: Array<number>, target: number): ExerciseResult => {
@@ -31,4 +52,10 @@ const calculateExercises = (exerciseData: Array<number>, target: number): Exerci
   return { periodLength, trainingDays, success, rating,ratingDescription, target, average };
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+try {
+  const { trainingData, target } = parseExerciseArguments(process.argv);
+
+  console.log(calculateExercises(trainingData, target));
+} catch (e) {
+  console.log('Something went wrong, message: ', e.message);
+}
