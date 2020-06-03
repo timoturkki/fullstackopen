@@ -1,18 +1,13 @@
 import React, { FC } from 'react';
-import { CourseInfo } from '../types';
+import { CoursePart } from '../types';
+import Part from './Part';
 
-const Content: FC<{ courses: CourseInfo[] }> = ({ courses }) => {
+const Content: FC<{ courses: CoursePart[] }> = ({ courses }) => {
   return (
     <>
-      <p>
-        {courses[0].name} {courses[0].exerciseCount}
-      </p>
-      <p>
-        {courses[1].name} {courses[1].exerciseCount}
-      </p>
-      <p>
-        {courses[2].name} {courses[2].exerciseCount}
-      </p>
+      {courses.map(course => (
+        <Part key={course.name} part={course} />
+      ))}
     </>
   );
 };
