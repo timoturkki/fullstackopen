@@ -10,10 +10,7 @@ const getEntries = (): PatientEntry[] => {
 };
 
 const getPublicEntries = (): PublicPatientEntry[] => {
-  return patients.map(patient => {
-    delete patient.ssn;
-    return patient;
-  });
+  return patients.map(patient => ({ ...patient, ssn: undefined }));
 };
 
 const addEntry = (entry: NewPatientEntry): PatientEntry => {
@@ -25,8 +22,13 @@ const addEntry = (entry: NewPatientEntry): PatientEntry => {
   return patientEntry;
 };
 
+const findById = (id: string): PatientEntry | undefined => {
+  return patients.find(patient => patient.id === id);
+};
+
 export default {
   getEntries,
   getPublicEntries,
-  addEntry
+  addEntry,
+  findById
 };
