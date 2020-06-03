@@ -1,14 +1,12 @@
 import React from 'react';
 import axios from "axios";
 import { useParams } from 'react-router-dom';
+import { Icon } from "semantic-ui-react";
 
 import { Patient, Gender } from "../types";
 import { apiBaseUrl } from "../constants";
+import EntryDetails from "../components/EntryDetails";
 import { useStateValue, addIndividualPatient } from "../state";
-
-interface MatchParams {
-  id: string;
-}
 
 const PatientPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -42,17 +40,21 @@ const PatientPage: React.FC = () => {
       <h2>
         {patient.name}
         {patient.gender === Gender.Other &&
-          <i aria-hidden="true" className="genderless icon"></i>
+          <Icon name="genderless" />
         }
         {patient.gender === Gender.Male &&
-          <i aria-hidden="true" className="mars icon"></i>
+          <Icon name="mars" />
         }
         {patient.gender === Gender.Female &&
-          <i aria-hidden="true" className="venus icon"></i>
+          <Icon name="venus" />
         }
       </h2>
       <p>ssn: {patient.ssn}</p>
       <p>occupation: {patient.occupation}</p>
+
+      {(patient.entries).map(entry => (
+        <EntryDetails key={entry.id} entry={entry} />
+      ))}
     </div>
   );
 };
