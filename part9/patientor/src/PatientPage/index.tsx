@@ -6,6 +6,7 @@ import { Icon } from "semantic-ui-react";
 import { Patient, Gender } from "../types";
 import { apiBaseUrl } from "../constants";
 import EntryDetails from "../components/EntryDetails";
+import AddEntryForm from "./AddEntryForm";
 import { useStateValue, addIndividualPatient } from "../state";
 
 const PatientPage: React.FC = () => {
@@ -55,6 +56,8 @@ const PatientPage: React.FC = () => {
       {(patient.entries).map(entry => (
         <EntryDetails key={entry.id} entry={entry} />
       ))}
+
+      <AddEntryForm patientId={patient.id} />
     </div>
   );
 };
