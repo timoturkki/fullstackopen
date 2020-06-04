@@ -7,7 +7,7 @@ import HospitalEntryDetails from "./HospitalEntry";
 import OccupationalHealthcareEntryDetails from "./OccupationalHealthcareEntry";
 
 const assertNever = (value: never): never => {
-  throw new Error(`Unhandled discriminated union member: ${JSON.stringify(value)}`);
+  throw new Error(`Unhandled entry: ${JSON.stringify(value)}`);
 };
 
 
