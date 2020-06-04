@@ -181,7 +181,7 @@ const parseEntryType = (type: any): EntryType => {
 };
 
 const parseHealthCheckRating = (rating: any): HealthCheckRating => {
-  if (!rating || !isHealthCheckRating(rating)) {
+  if (rating === undefined || rating === null || !isHealthCheckRating(rating)) {
     throw new Error(`Incorrect or missing HealthCheckRating: ${rating}`);
   }
 
