@@ -1,5 +1,24 @@
-interface BaseEntry {
+export interface DiagnoseEntry {
+  code: string;
+  name: string;
+  latin?: string;
+}
+
+export enum Gender {
+  Male = 'male',
+  Female = 'female',
+  Other = 'other',
+}
+
+export enum EntryType {
+  HealthCheck = 'HealthCheck',
+  OccupationalHealthcare = 'OccupationalHealthcare',
+  Hospital = 'Hospital'
+}
+
+export interface BaseEntry {
   id: string;
+  type: EntryType;
   description: string;
   date: string;
   specialist: string;
@@ -13,34 +32,39 @@ export enum HealthCheckRating {
   'CriticalRisk' = 3
 }
 
+export interface Discharge {
+  date: string;
+  criteria: string;
+}
+
+export interface SickLeave {
+  startDate: string;
+  endDate: string;
+}
+
 interface HealthCheckEntry extends BaseEntry {
-  type: 'HealthCheck';
+  type: EntryType.HealthCheck;
   healthCheckRating: HealthCheckRating;
 }
 
 interface HospitalEntry extends BaseEntry {
-  type: 'Hospital';
-  discharge: {
-    date: string;
-    criteria: string;
-  }
+  type: EntryType.Hospital;
+  discharge: Discharge;
 }
 
-interface OccupationalHealthcareEntry extends BaseEntry {
-  type: 'OccupationalHealthcare';
+export interface OccupationalHealthcareEntry extends BaseEntry {
+  type: EntryType.OccupationalHealthcare;
   employerName: string;
-  sickLeave?: {
-    startDate: string;
-    endDate: string;
-  }
+  sickLeave?: SickLeave;
 }
 
-export type Entry =
-  | HospitalEntry
-  | OccupationalHealthcareEntry
-  | HealthCheckEntry;
+export type Entry = HospitalEntry | OccupationalHealthcareEntry | HealthCheckEntry;
 
-export interface PatientEntry {
+export type NewEntry = Omit<Entry, 'id'>;
+
+export type NewBaseEntry = Omit<BaseEntry, 'id'>;
+
+export interface Patient {
   id: string;
   name: string;
   dateOfBirth: string;
@@ -50,18 +74,6 @@ export interface PatientEntry {
   entries: Entry[];
 } 
 
-export type PublicPatientEntry = Omit<PatientEntry, 'ssn' | 'entries'>;
+export type PublicPatient = Omit<Patient, 'ssn' | 'entries'>;
 
-export type NewPatientEntry = Omit<PatientEntry, 'id'>;
-
-export interface DiagnoseEntry {
-  code: string;
-  name: string;
-  latin?: string;
-}
-
-export enum Gender {
-  Male = 'male',
-  Female = 'female',
-  Other = 'other',
-}
+export type NewPatient = Omit<Patient, 'id'>;

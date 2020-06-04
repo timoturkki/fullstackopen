@@ -1,34 +1,53 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import { patientData } from '../../data/patients';
-import { PatientEntry, PublicPatientEntry, NewPatientEntry } from '../types';
+import { Patient, PublicPatient, NewPatient, NewEntry, Entry } from '../types';
 
-const patients: PatientEntry[] = patientData;
+const patients: Patient[] = patientData;
 
-const getEntries = (): PatientEntry[] => {
+const getEntries = (): Patient[] => {
   return patients;
 };
 
-const getPublicEntries = (): PublicPatientEntry[] => {
+const getPublicPatientData = (): PublicPatient[] => {
   return patients.map(patient => ({ ...patient, ssn: undefined, entries: undefined }));
 };
 
-const addEntry = (entry: NewPatientEntry): PatientEntry => {
+const addPatient = (entry: NewPatient): Patient => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const id = uuidv4();
-  const patientEntry = { ...entry, id };
+  const Patient = { ...entry, id };
   
-  patients.push(patientEntry);
-  return patientEntry;
+  patients.push(Patient);
+  return Patient;
 };
 
-const findById = (id: string): PatientEntry | undefined => {
+const findById = (id: string): Patient | undefined => {
   return patients.find(patient => patient.id === id);
 };
 
+const addEntryForPatient = (patient: Patient, entry: NewEntry): Patient => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  const id = uuidv4();
+  const newEntry = { ...entry, id } as Entry;
+  const newPatientData = {
+    ...patient,
+    entries: [
+      ...patient.entries,
+      newEntry
+    ]
+  };
+  
+  const patientIndex = patients.indexOf(patient);
+  patients[patientIndex] = newPatientData;
+  return newPatientData;
+};
+
+
 export default {
   getEntries,
-  getPublicEntries,
-  addEntry,
-  findById
+  getPublicPatientData,
+  addPatient,
+  findById,
+  addEntryForPatient
 };
