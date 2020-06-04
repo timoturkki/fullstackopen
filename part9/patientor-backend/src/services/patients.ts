@@ -26,7 +26,7 @@ const findById = (id: string): Patient | undefined => {
   return patients.find(patient => patient.id === id);
 };
 
-const addEntryForPatient = (patient: Patient, entry: NewEntry): Patient => {
+const addEntryForPatient = (patient: Patient, entry: NewEntry): Entry => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const id = uuidv4();
   const newEntry = { ...entry, id } as Entry;
@@ -40,7 +40,7 @@ const addEntryForPatient = (patient: Patient, entry: NewEntry): Patient => {
   
   const patientIndex = patients.indexOf(patient);
   patients[patientIndex] = newPatientData;
-  return newPatientData;
+  return newEntry;
 };
 
 
