@@ -3,12 +3,12 @@ import axios from "axios";
 import { Button, Segment } from "semantic-ui-react";
 import { Field, Formik, Form } from "formik";
 
-import { TextField, NumberField, SelectOptions, SelectField } from "../AddPatientModal/FormField";
-import { Entry, EntryType, HealthCheckRating } from "../types";
+import { TextField, NumberField, SelectOptions, SelectField, DiagnosisSelection } from "../AddPatientModal/FormField";
+import { Entry, EntryType, HealthCheckRating, EntryFormValues } from "../types";
 import { apiBaseUrl } from "../constants";
 import { useStateValue, addEntry } from "../state";
 
-export type PatientFormValues = any;
+export type PatientFormValues = EntryFormValues;
 
 const typeOptions: SelectOptions[] = [
   { value: EntryType.HealthCheck, label: "Health check" },
@@ -17,41 +17,43 @@ const typeOptions: SelectOptions[] = [
 ];
 
 export const AddEntryForm: React.FC<{ patientId: string }> = ({ patientId }) => {
-  const [, dispatch] = useStateValue();
+  const [{ diagnosis }, dispatch] = useStateValue();
   const [error, setError] = React.useState<string | undefined>();
 
   const submitNewEntry = async (values: PatientFormValues, { resetForm }: { resetForm: () => void }) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const submitValues: any = {...values};
     try {
-      if (values.type === EntryType.Hospital) {
-        values.discharge = {
-          date: values.dischargeDate,
-          criteria: values.dischargeCriteria,
+      if (submitValues.type === EntryType.Hospital) {
+        submitValues.discharge = {
+          date: submitValues.dischargeDate,
+          criteria: submitValues.dischargeCriteria,
         };
       }
 
-      if (values.type === EntryType.OccupationalHealthCare) {
-        values.sickLeave = {
-          startDate: values.sickLeaveStartDate,
-          endDate: values.sickLeaveEndDate,
+      if (submitValues.type === EntryType.OccupationalHealthCare) {
+        submitValues.sickLeave = {
+          startDate: submitValues.sickLeaveStartDate,
+          endDate: submitValues.sickLeaveEndDate,
         };
       }
 
-      delete values.dischargeDate;
-      delete values.dischargeCriteria;
-      delete values.sickLeaveStartDate;
-      delete values.sickLeaveEndDate;
+      delete submitValues.dischargeDate;
+      delete submitValues.dischargeCriteria;
+      delete submitValues.sickLeaveStartDate;
+      delete submitValues.sickLeaveEndDate;
 
-      if (values.type !== EntryType.OccupationalHealthCare) {
-        delete values.employerName;
+      if (submitValues.type !== EntryType.OccupationalHealthCare) {
+        delete submitValues.employerName;
       }
 
-      if (values.type !== EntryType.HealthCheck) {
-        delete values.healthCheckRating;
+      if (submitValues.type !== EntryType.HealthCheck) {
+        delete submitValues.healthCheckRating;
       }
 
       const { data: newEntry } = await axios.post<Entry>(
         `${apiBaseUrl}/patients/${patientId}/entries`,
-        values
+        submitValues
       );
       dispatch(addEntry(patientId, newEntry));
       resetForm();
@@ -110,7 +112,7 @@ export const AddEntryForm: React.FC<{ patientId: string }> = ({ patientId }) => 
           return errors;
         }}
       >
-        {({ isValid, dirty, values }) => {
+        {({ isValid, dirty, values, setFieldValue, setFieldTouched }) => {
           return (
             <Form className="form ui">
               <SelectField
@@ -124,6 +126,11 @@ export const AddEntryForm: React.FC<{ patientId: string }> = ({ patientId }) => 
                 name="description"
                 component={TextField}
               />
+               <DiagnosisSelection
+                setFieldValue={setFieldValue}
+                setFieldTouched={setFieldTouched}
+                diagnoses={Object.values(diagnosis)}
+              /> 
               <Field
                 label="Date Of Entry"
                 placeholder="YYYY-MM-DD"

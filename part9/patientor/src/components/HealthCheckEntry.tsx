@@ -2,8 +2,11 @@ import React from 'react';
 import { Card, Icon } from "semantic-ui-react";
 
 import { HealthCheckEntry, HealthCheckRating } from "../types";
+import { useStateValue } from "../state";
 
 const HealthCheckEntryDetails: React.FC<{ entry: HealthCheckEntry }> = ({ entry }) => {
+  const [{ diagnosis }] = useStateValue();
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const healtRatingColor = (): any => {
     switch (entry.healthCheckRating) {
@@ -26,6 +29,16 @@ const HealthCheckEntryDetails: React.FC<{ entry: HealthCheckEntry }> = ({ entry 
         </Card.Header>
 
         <p>{entry.description}</p>
+
+        <ul>
+          {(entry.diagnosisCodes || []).map(c => (
+            <div key={c}>
+              {diagnosis[c] && <li>
+                {diagnosis[c].name}
+              </li>}
+            </div>
+          ))}
+        </ul>
 
         <Icon color={healtRatingColor()} name="heart" />
       </Card.Content>
