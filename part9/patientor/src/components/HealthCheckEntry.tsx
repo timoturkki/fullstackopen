@@ -18,8 +18,6 @@ const HealthCheckEntryDetails: React.FC<{ entry: HealthCheckEntry }> = ({ entry 
     }
   };
 
-  console.log(healtRatingColor());
-
   return (
     <Card fluid>
       <Card.Content>

@@ -17,7 +17,7 @@ export enum Gender {
 }
 
 interface BaseEntry {
-  id: string;
+  id?: string;
   description: string;
   date: string;
   specialist: string;
