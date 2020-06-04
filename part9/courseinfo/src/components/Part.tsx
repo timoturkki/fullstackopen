@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { CoursePart } from '../types';
 
 const assertNever = (value: never): never => {
-  throw new Error(`Unhandled discriminated union member: ${JSON.stringify(value)}`);
+  throw new Error(`Unhandled course part: ${JSON.stringify(value)}`);
 };
 
 const Part: FC<{ part: CoursePart }> = ({ part }) => {
