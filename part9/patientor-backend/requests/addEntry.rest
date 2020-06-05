@@ -3,7 +3,7 @@ content-type: application/json
 
 {
   "type": "HealthCheck",
-  "healthCheckRating": "1",
+  "healthCheckRating": 1,
   "description": "Just testing here",
   "date": "2001-02-01",
   "specialist": "Someone"
